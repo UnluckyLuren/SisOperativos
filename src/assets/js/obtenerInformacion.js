@@ -21,7 +21,7 @@ const resultadosFinalesTr = document.getElementById("resCont");
 // Datos del formulario
 // Objeto literal a lograr: {Nombre, 1erNum, 2doNum, operacion, tiempoEstimado, id}
 
-const misDatos = document.querySelectorAll(".datosP"); // Nombre, 1erNumero, 2doNumero
+const misDatos = document.querySelectorAll(".datosP"); // Nombre, 1erNumero, 2doNumero, Id, TME
 const misChecks = document.querySelectorAll(".misChecks"); // Para encontrar la operación asignada
 
 // arreglo Objetos
@@ -46,18 +46,48 @@ function numeroAleatorio(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const crearObjInfo = (numI) => ({
-    nombre: misDatos[0].value,
-    numA: misDatos[1].value,
-    numB: misDatos[2].value,
-    opr: encontrarOperacion(),
-    tiempo: numeroAleatorio(1, 10),
-    id: numI+1
-});
+const verfId = () => {
+
+    let boolean = true;
+
+    if (arrObjetos.length > 0) {
+        arrObjetos.forEach(e => {
+            if (misDatos[3].value === e.id) {
+                alert('El ID ya existe, ingresa otro');
+                boolean = false;
+            }
+        });
+    }
+
+    return boolean;
+}
+
+const crearObjInfo = () => {
+    
+    let miId = verfId();
+
+    if (miId) {
+
+        return {
+            nombre: misDatos[0].value,
+            numA: misDatos[1].value,
+            numB: misDatos[2].value,
+            opr: encontrarOperacion(),
+            tiempo: misDatos[4].value,
+            id: misDatos[3].value
+        }
+
+    } else { return false; }
+};
 
 const guardarObj = () => {
     // Obtenemos el objeto literal
-    let objLit = crearObjInfo(arrObjetos.length);
+    let objLit = crearObjInfo();
+
+    if (objLit === false) {
+        return false;
+    }
+
     arrObjetos.push(objLit);
 
     // Actualizamos la información del proceso actual en el span
@@ -287,7 +317,62 @@ const ejecutarLotes = () => {
     procesarTodosLotes();
 };
 
+const verfCero = () => {
+    // Asegurarse de que los elementos existen
+    if (misDatos.length < 4) {
+        alert("Faltan campos en el formulario");
+        return false;
+    }
+    
+    let num = parseFloat(misDatos[2].value); // Convertir a número
+    let miOp = encontrarOperacion();
+    
+    // Verificar si el segundo número es 0 y la operación es problemática
+    if ((miOp === '/' || miOp === '%') && num === 0) {
+        alert(miOp === '/' ? 
+            "No puedes dividir entre 0" : 
+            "En residuo el 2do número no puede ser 0");
+        return false;
+    }
+    
+    return true;
+}
+
+const verfTme = () => {
+    let num = parseFloat(miTME.value); // Convertir a número
+   
+     // Validar que sea mayor a 0
+    if (num <= 0) {
+        alert("El TME debe ser mayor a 0");
+        return false;
+    } 
+    
+    return true;
+}
+
 // Eventos
+
+const miIdProc = document.getElementById("miIdProc");
+const mi2doNum = document.getElementById("mi2doNum");
+const miCheckDividir = document.getElementById("match_4");
+const miCheckResiduo = document.getElementById("match_5");
+const miTME = document.getElementById("miTME");
+
+miIdProc.addEventListener("blur", () => {
+    verfId();
+});
+
+mi2doNum.addEventListener("blur", () => {
+    verfCero();
+});
+
+miCheckDividir.addEventListener("click", () => {
+    verfCero();
+});
+
+miCheckResiduo.addEventListener("click", () => {
+    verfCero();
+});
 
 formOriginal.addEventListener("submit", e => {
     e.preventDefault();
@@ -318,10 +403,11 @@ btnEnviarForm.addEventListener("click", () => {
 
     if (misDatos[0].value.length < 1) {
         alert("Ingresa un nombre...");
-    } else if (((parseInt(misDatos[1].value) <= 0) || (parseInt(misDatos[2].value) <= 0)) || (misDatos[1].value.length < 1) || (misDatos[1].value.length < 1) ) {
-        alert("Ingresa un numero mayor a 0...");
-    } else {
-        guardarObj();
+    } else if (verfCero()) {
+        let op =  verfTme();
+        if (op) {
+            guardarObj();   
+        }
     }
 
 });
