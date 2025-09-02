@@ -95,7 +95,7 @@ async function imprimirCiclicamente(objetos, intervalosMs, loteActNum, cantLot) 
     for (let i = 0; i < objetos.length; i++) {
         const objeto = objetos[i];
         const intervalo = intervalosMs[i] || intervalosMs[0];
-        
+
         // Mostrar el objeto actual
         datEjecucion[0].textContent = objeto.nombre;
         datEjecucion[1].textContent = `${objeto.numA} ${objeto.opr} ${objeto.numB}`;
@@ -113,6 +113,12 @@ async function imprimirCiclicamente(objetos, intervalosMs, loteActNum, cantLot) 
         tiempoProc[1].textContent = "TT: 0.0"; // Tiempo transcurrido
         tiempoProc[2].textContent = "TR"+(intervalo / 1000).toFixed(1); // Tiempo restante
         
+        
+        // Cambio del objeto a resultados y eliminado de la primera tabla
+
+        let liRe = document.getElementById(`${objeto.nombre}+${objeto.id}`);
+        liNombres.removeChild(liRe);
+
         // Crear intervalo para los cronómetros
         const intervaloId = setInterval(() => {
             tiempoTranscurrido += incremento;
@@ -149,10 +155,6 @@ async function imprimirCiclicamente(objetos, intervalosMs, loteActNum, cantLot) 
         tiempoProc[1].textContent = "TT: 0.0";
         tiempoProc[2].textContent = "TR: 0.0";
 
-        // Cambio del objeto a resultados y eliminado de la primera tabla
-
-        let liRe = document.getElementById(`${objeto.nombre}+${objeto.id}`);
-        liNombres.removeChild(liRe);
 
         // Creacion de tr para resultados
 
