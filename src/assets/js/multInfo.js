@@ -135,11 +135,12 @@ const terminarProceso = (esError) => {
             case '/': resultadoNumerico = numA / numB; break;
             case '%': resultadoNumerico = numA % numB; break;
             case '^': resultadoNumerico = Math.pow(numA, numB); break;
-            default: resultadoNumerico = NaN; // Marcar como error si la operación no es válida
+            default: resultadoNumerico = 'Error'; // Marcar como error si la operación no es válida
         }
 
         // 2. Se formatea el resultado según las reglas
-        if (isNaN(resultadoNumerico)) {
+
+        if (resultadoNumerico === 'Error') {
             resultado = "ERROR";
         } else if (Math.abs(resultadoNumerico) > 10000) {
             // Si es mayor a 10000, usamos notación científica
@@ -220,7 +221,13 @@ const actualizarUI = () => {
     procesosTerminadosBody.innerHTML = '';
     procesosTerminados.forEach(proc => {
         const row = document.createElement('tr');
-        let resUt = parseFloat(proc.resultado).toFixed(2);
+        let resUt = 0;
+
+        if (proc.resultado === 'ERROR') {
+            resUt = 'ERROR';
+        } else {
+            resUt = parseFloat(proc.resultado).toFixed(2);
+        }
 
         row.innerHTML = `
             <td>${proc.id}</td>
