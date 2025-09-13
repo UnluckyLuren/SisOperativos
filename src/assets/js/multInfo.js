@@ -46,7 +46,7 @@ const generarProcesos = (cantidad) => {
             operacion: operacion,
             numA: numA,
             numB: numB,
-            tme: numeroAleatorio(6, 10),
+            tme: numeroAleatorio(6, 20),
             tiempoTranscurrido: 0,
             numeroLote: 0,
         });
