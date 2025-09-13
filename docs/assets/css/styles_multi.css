@@ -1,0 +1,186 @@
+:root {
+    --Color-Menu: rgba(55, 55, 59, 0.986);
+    --Color-hover: #4e4c5c;
+    --Text-bck-shadow: 2px 2px 2px black, 2px -2px 2px black, -2px 2px 2px black, -2px -2px 2px black;
+    --Color-User-page: rgba(46, 46, 46, 0.897);
+    --Color-BG-sections: #626262;
+    --Color-text-section-examples: #23212e;
+    --color-page: #f0f0f0;
+    --shadow: 0.5em 0.5em 0.5em rgba(0, 0, 0, 0.589);
+    --shadow-content-promove: 0.5em 0.5em 0.5em rgba(218, 218, 218, 0.589);
+    --Border-bootom-white: 2px solid rgba(228, 228, 228, 0.924);
+    --Color-BG-Public-User: #979797;
+    --Col-Background: rgba(221, 221, 221, 0.315);
+    --Shadow-CTG: 0 4px 3px rgba(0, 0, 0, 0.5);
+    --Separation-aside: 5px solid #f1f1f1;
+    --color-formulario: rgba(51, 51, 51, 0.61);
+    --color-lineas: rgba(255, 255, 255, 0.959);
+    --color-fondo: repeating-linear-gradient(skyblue 0, skyblue 5px, orange 5px, orange 10px);
+    --color-sombra: 0 10px 10px 0 rgba(90, 116, 148, 0.3);
+    --sombras: rgba(0, 0, 0, 0.3);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Estilos form */
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,900');
+
+html, body {
+    height: 100vh;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #00171F;
+    color: #FAFAFA;
+}
+
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.form {
+    max-width: 670px;
+    margin: 60px auto;
+    z-index: 1;
+    background-color: var(--sombras);
+    padding: 2em;
+    border-radius: 1em;
+    transition: all ease-in-out 0.2s 0.2s;
+}
+
+.form__header { margin-bottom: 40px; border-bottom: 1px dashed rgba(250, 250, 250, 0.15); }
+.form__title { font-size: 45px; margin: 10px 0; }
+.form__instruction { font-size: 22px; }
+.form__options { border: none; padding: 0; }
+.form__question { font-size: 25px; }
+.form__answer { display: inline-block; box-sizing: border-box; width: 23%; margin: 20px 1% 20px 0; height: 180px; vertical-align: top; font-size: 22px; text-align: center; }
+label { border: 1px solid rgba(250, 250, 250, 0.15); box-sizing: border-box; display: block; height: 100%; width: 100%; padding: 10px 10px 30px 10px; cursor: pointer; opacity: .5; transition: all .5s ease-in-out; z-index: 1; }
+label:hover, label:focus, label:active { border: 1px solid rgba(250, 250, 250, 0.5); }
+
+.form__button { height: 40px; border: none; background-color: #00703f; color: #FAFAFA; text-transform: uppercase; font-family: 'Source Sans Pro', sans-serif; padding: 0 20px; border-radius: 20px; font-weight: 900; cursor: pointer; margin: 40px 0; transition: all .25s ease-in-out; z-index: 2; }
+.form__button:hover, .form__button:focus { background-color: #00824A; text-shadow: 1px 1px 1px rgba(0, 0, 0, .25); outline: none; }
+input[type="radio"] { opacity: 0; width: 0; height: 0; }
+input[type="radio"]:active ~ label { opacity: 1; }
+input[type="radio"]:checked ~ label { opacity: 1; border: 1px solid #FAFAFA; }
+input[type="text"], input[type="number"] { height: auto; width: 610px; padding: 10px 10px 30px 10px; background: transparent; margin: 0 0 2em 0; position: relative; font-size: larger; z-index: 2; color: white; border-radius: 1em; }
+input[type="number"] { width: 8em; }
+.lotes input[type="number"] { margin: 0; }
+.descripcion { margin-bottom: 20px; }
+.contNumeros { display: flex; flex-direction: row; width: 620px; }
+.childNumero { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.childNumero:last-child { position: relative; left: 19em; }
+.disableCont { opacity: 0; transition: all ease-in-out 0.2s 0.2s; pointer-events: none; }
+.lotes { display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 20em; }
+.btnEnv { position: relative; }
+
+
+/* Estilos de la tabla */
+
+
+.procesos-contenedor {
+    max-width: 1200px;
+    color: black;
+    margin: 20px auto;
+    z-index: 10;
+    font-size: 1rem; /* Ajustado para mejor legibilidad */
+}
+
+.procesos-titulo {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 5px;
+}
+
+.procesos-lotes-pendientes {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.procesos-tabla-contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+/* Estilo de columna modificado para parecerse a la imagen */
+.procesos-columna {
+    background-color: #EAECEE; /* Gris claro como en la imagen */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    border: 1px solid #D5D8DC;
+    overflow: hidden; /* Para que el radio del borde afecte al título */
+}
+
+/* Título de columna modificado */
+.procesos-columna-titulo {
+    background-color: #3498db; /* Azul del título */
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Nuevo contenedor para el contenido de la columna */
+.columna-contenido {
+    padding: 15px;
+}
+
+/* Nuevo estilo para el subtítulo "Procesos" */
+.procesos-subtitulo {
+    font-weight: bold;
+    color: #34495E;
+    margin-bottom: 10px;
+}
+
+/* Estilos para la tabla de procesos en espera (Lote Actual) */
+.procesos-tabla-espera {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#procesosEsperaBody tr {
+    justify-content: space-between;
+    background-color: white;
+    border: 1px solid #BDC3C7;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+#procesosEsperaBody td {
+    border-bottom: none;
+    padding: 0.5em;
+    text-align: center;
+}
+
+/* Estilos para la columna de Ejecución y Terminados */
+.procesos-info-ejecucion { margin-bottom: 15px; padding: 10px; background-color: #e8f4fc; border-radius: 5px; }
+.procesos-info-linea { margin-bottom: 8px; padding: 5px; }
+.procesos-tiempos { margin-top: 20px; }
+.procesos-tiempo { padding: 8px; margin-bottom: 8px; background-color: #e8f4fc; border-radius: 4px; font-weight: 500; }
+
+.procesos-tabla-terminados { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.procesos-tabla-terminados th { background-color: #3498db; color: white; padding: 8px; text-align: left; }
+.procesos-tabla-terminados td { padding: 8px; border-bottom: 1px solid #ddd; }
+.procesos-tabla-terminados tr:nth-child(even) { background-color: #f2f2f2; }
+
+@media (max-width: 900px) {
+    .procesos-tabla-contenedor {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cont {
+    color: white;
+    margin: 1em;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Sitemas Operativos</title>
+
+	<link rel="stylesheet" href="./css/styles_multi.css">
+	<link rel="stylesheet" href="./css/styles_bg.css">
+    <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
+
+</head>
+
+<body>
+
+	<!-- Background -->
+
+	<canvas id='orbGen'></canvas>
+
+	<!-- Menu -->
+
+	<nav id="mainNav">
+		<ul>
+			<a href="../index.html"><li>Inicio</li></a>
+			<a href="./lotes.html"><li>Lotes</li></a>
+			<li>multi</li>
+			<li>Siguente</li>
+			<li>Configurar</li>
+			<li>Ayuda</li>
+		</ul>
+	</nav>
+
+    <div class="contForm">
+        <div class="form lotes" id="lotes">
+            <legend class="form__question descripcion">¿Cuántos procesos quieres simular?</legend>
+            <input type="number" min="1" id="numProcesos">
+            <button class="form__button" type="submit" id="iniciarSimulacion">Iniciar Simulación</button>
+        </div>
+
+        <div class="procesos-contenedor disableCont" id="simulacionContenedor">
+            <div class="procesos-titulo">Gestión de Procesos</div>
+            <div class="procesos-lotes-pendientes">No. Lotes pendientes: <span id="lotesPendientesSpan">0</span></div>
+
+            <div class="procesos-tabla-contenedor">
+                <div class="procesos-columna">
+                    <div class="procesos-columna-titulo">Lote actual</div>
+                    <div class="columna-contenido">
+                        <div class="procesos-subtitulo">Procesos</div>
+                        <table class="procesos-tabla-espera">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>TME</th>
+                                    <th>TT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="procesosEsperaBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="procesos-columna">
+                    <div class="procesos-columna-titulo">Proceso en ejecución</div>
+                     <div class="columna-contenido">
+                        <div id="procesoEnEjecucionInfo" class="procesos-info-ejecucion">
+                            <p>Esperando proceso...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="procesos-columna">
+                    <div class="procesos-columna-titulo">Terminados</div>
+                     <div class="columna-contenido">
+                        <table class="procesos-tabla-terminados">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>OPE</th>
+                                    <th>RES</th>
+                                    <th>NumLote</th>
+                                </tr>
+                            </thead>
+                            <tbody id="procesosTerminadosBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 id="relojGlobal" class="cont">Contador Global: 0s</h3>
+            <div id="estadoSimulacion" class="estado-simulacion" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+	<script src="./js/bg.js"></script>
+    <script src="./js/multInfo.js"></script>
+
+</body>
+
+</html>

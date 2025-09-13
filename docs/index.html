@@ -10,6 +10,8 @@
 	<link rel="stylesheet" href="./assets/css/styles_lotes.css">
 	<link rel="stylesheet" href="./assets/css/styles_bg.css">
 
+	<link rel="shortcut icon" href="./assets/img/icon.png" type="image/x-icon">
+
 <script defer src="main.js"></script></head>
 
 <body>
@@ -23,246 +25,18 @@
 	<nav id="mainNav">
 		<ul>
 			<li>Inicio</li>
-			<li>Reiniciar</li>
-			<li>Anterior</li>
+			<a href="./assets/lotes.html"><li>Lotes</li></a>
+			<a href="./assets/multiprogramacion.html"><li>multi</li></a>
 			<li>Siguente</li>
 			<li>Configurar</li>
 			<li>Ayuda</li>
 		</ul>
 	</nav>
 
-	<!-- Formulario -->
-	<div class="contForm">
+	
 
-		<div class="form lotes" id="lotes">
-			<legend class="form__question descripcion">¿Cuántos procesos quieres realizar?</legend>
-			<input type="number" min="1" id="numProcesos">
-			<button class="form__button" type="submit" id="iniciarRecopilacion">Iniciar</button>
-		</div>
-
-		<div class="form contProcesos disableCont" id="contProcesosPedidos">
-			<legend class="form__question descripcion">Proceso <span id="procesoActual"></span></legend>
-		</div>
-
-		<div class="form disableCont" id="procesosForm">
-
-			<form id="formOriginal">
-
-				<legend class="form__question descripcion">Nombre</legend>
-				<input type="text" placeholder="Escribe tú nombre" class="datosP">
-
-				<div class="contNumeros">
-					<div class="childNumero">
-						<legend class="form__question descripcion">1er Número</legend>
-						<input type="number" class="datosP" value="1">
-					</div>
-
-					<div class="childNumero">
-						<legend class="form__question descripcion">2do Número</legend>
-						<input type="number" class="datosP" value="1" id="mi2doNum">
-					</div>
-				</div>
-
-				<div class="contIdsTme contNumeros">
-					<div class="childNumero]">
-						<legend class="form__question descripcion">ID</legend>
-						<input type="number" min="1" class="datosP" value="1" id="miIdProc">
-					</div>
-
-					<div class="contIdsTme childNumero">
-						<legend class="form__question descripcion">TME</legend>
-						<input type="number" min="1" class="datosP" value="1" id="miTME">
-					</div>
-				</div>
-
-				<fieldset class="form__options">
-					<legend class="form__question">Operación
-					</legend>
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_1" value="+" checked class="misChecks">
-						<label for="match_1">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Plus</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Plus" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-										<!-- Línea vertical -->
-										<path d="M50 20 L50 80"></path>
-										<!-- Línea horizontal -->
-										<path d="M20 50 L80 50"></path>
-									</g>
-								</g>
-							</svg>
-
-
-							sumar
-						</label>
-					</p>
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_2" value="-" class="misChecks">
-						<label for="match_2">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Minus</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Minus" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-										<path d="M20 50 L80 50"></path>
-									</g>
-								</g>
-							</svg>
-
-							restar
-						</label>
-					</p>
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_3" value="x" class="misChecks">
-						<label for="match_3">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Multiply</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Multiply" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-										<path d="M25 25 L75 75"></path>
-										<path d="M75 25 L25 75"></path>
-									</g>
-								</g>
-							</svg>
-
-							Multiplicar
-						</label>
-					</p>
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_4" value="/" class="misChecks">
-						<label for="match_4">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Divide</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Divide" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-										<path d="M20 50 L80 50"></path>
-										<circle cx="50" cy="25" r="4"></circle>
-										<circle cx="50" cy="75" r="4"></circle>
-									</g>
-								</g>
-							</svg>
-
-							Dividir
-						</label>
-					</p>
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_5" value="%" class="misChecks">
-						<label for="match_5">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Modulo</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Modulo" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round">
-										<path d="M30 70 L70 30"></path>
-										<circle cx="30" cy="30" r="6"></circle>
-										<circle cx="70" cy="70" r="6"></circle>
-									</g>
-								</g>
-							</svg>
-
-							Residuo
-						</label>
-					</p>
-
-
-					<p class="form__answer">
-						<input type="radio" name="match" id="match_6" value="^" class="misChecks">
-						<label for="match_6">
-							<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-								<title>Icon Power</title>
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<g id="Power" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"
-										stroke-linejoin="round">
-										<path d="M30 70 L50 30 L70 70"></path>
-									</g>
-								</g>
-							</svg>
-
-							Potencia
-						</label>
-					</p>
-
-
-				</fieldset>
-				<button class="form__button btnEnv" type="submit" id="btnEnviarForm">Confirmar</button>
-			</form>
-		</div>
-
-		<!-- Tabla de resultados -->
-
-		<div class="procesos-contenedor disableCont" id="tablaRes">
-			<div class="procesos-titulo">Sistema de Gestión de Procesos</div>
-			<div class="procesos-lotes-pendientes">No. Lotes pendientes: <span id="lotPen"></span></div>
-
-			<div class="procesos-tabla-contenedor">
-				<!-- Columna 1: Lote actual -->
-				<div class="procesos-columna">
-					<div class="procesos-columna-titulo">Lote actual</div>
-					<div class="procesos-subtitulo">Nombres</div>
-					<ul class="procesos-lista-nombres" id="liNombres">
-						<!-- Aqui se insertan desde js los <li> con los nombres correspondientes -->
-					</ul>
-				</div>
-
-				<!-- Columna 2: Proceso en ejecución -->
-				<div class="procesos-columna">
-					<div class="procesos-columna-titulo">Proceso en ejecución</div>
-					<div class="procesos-info-ejecucion">
-						<div class="procesos-info-linea"><strong>Nombre:</strong> <span class="datEjecucion"> 
-								<!--Aqui guardo el nombre de la persona cuyo proceso se esta ejecutando  -->
-						</span></div>
-						<div class="procesos-info-linea"><strong>Ope:</strong> <span class="datEjecucion"> 
-								<!--Aqui guardo la operación de la persona cuyo proceso se esta ejecutando  -->
-						</span> </div>
-						<div class="procesos-info-linea"><strong>ID:</strong> <span class="datEjecucion"> 
-								<!--Aqui guardo el id del proceso se esta ejecutando  -->
-						</span> </div>
-					</div>
-
-					<div class="procesos-tiempos">
-						<div class="procesos-tiempo">Tiempo Máximo Estimado</div>
-						<div class="procesos-tiempo">Tiempo Total</div>
-						<div class="procesos-tiempo">Tiempo Restante</div>
-					</div>
-				</div>
-
-				<!-- Columna 3: Terminados -->
-				<div class="procesos-columna">
-					<div class="procesos-columna-titulo">Terminados</div>
-					<table class="procesos-tabla-terminados">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>OPE</th>
-								<th>RES</th>
-								<th>NumLote</th>
-							</tr>
-						</thead>
-						<tbody id="resCont">
-							<tr>
-								<td class="resTablaFin"> </td>
-								<td class="resTablaFin"> </td>
-								<td class="resTablaFin"> </td>
-								<td class="resTablaFin"> </td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-			<h3 id="conGlobal" class="cont">Hola Mundo</h3>
-
-		</div>
-
-
-	</div>
 
 	<script src="./assets/js/bg.js"></script>
-	<script src="./assets/js/obtenerInformacion.js"></script>
 
 </body>
 
