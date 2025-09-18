@@ -247,13 +247,13 @@ document.addEventListener('keydown', (e) => {
 
     switch (tecla) {
         case 'E':
-            if (procesoEnEjecucion) {
+            if (procesoEnEjecucion && (estaPausado === false)) {
                 lotes[loteActualIndice].push(procesoEnEjecucion);
                 procesoEnEjecucion = null;
             }
             break;
         case 'W':
-            if (procesoEnEjecucion) {
+            if (procesoEnEjecucion && (estaPausado === false)) {
                 terminarProceso(true);
             }
             break;
