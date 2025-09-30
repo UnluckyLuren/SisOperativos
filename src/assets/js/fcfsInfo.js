@@ -87,6 +87,20 @@ btnIniciar.addEventListener("click", () => {
     simulacionContenedor.classList.remove('disableCont');
     simulacionContenedor.classList.add('enableCont');
 
+    // Carga inicial de procesos en memoria
+    while (listos.length + bloqueados.length < MAX_PROCESOS_EN_MEMORIA && nuevos.length > 0) {
+        const procesoAAdmitir = nuevos.shift();
+        procesoAAdmitir.tiempoLlegada = 0;
+        listos.push(procesoAAdmitir);
+    }
+
+    // Colocar el primer proceso en ejecución INMEDIATAMENTE
+    if (!procesoEnEjecucion && listos.length > 0) {
+        procesoEnEjecucion = listos.shift(); 
+        procesoEnEjecucion.fueEjecutado = true;
+        procesoEnEjecucion.tiempoRespuesta = relojGlobal - procesoEnEjecucion.tiempoLlegada;
+    }
+
     iniciarMotorSimulacion();
 });
 
@@ -101,34 +115,33 @@ const tick = () => {
     if (estaPausado) return;
     relojGlobal++;
 
-    // 1. checamos los procesos bloqueados
     manejarBloqueados();
+
+    // 1. Primero, incrementamos el tiempo de los que YA ESTABAN esperando.
+    listos.forEach(p => p.tiempoEspera++);
     
-    // 2. Admitimos nuevos procesos a memoria solo si tenemos hay espacio
+    // 2. Después, admitimos a los nuevos.
     admitirNuevos();
 
-    // 3. Incrementamos el tiempo de espera para los procesos en listos
-    listos.forEach(p => p.tiempoEspera++);
+    // 1. Manejar el proceso actualmente en ejecución
+    if (procesoEnEjecucion) {
+        procesoEnEjecucion.tiempoTranscurrido++;
+        procesoEnEjecucion.tiempoServicio++;
+        if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tme) {
+            terminarProceso(false); // Esto deja `procesoEnEjecucion` en null
+        }
+    }
 
-    // 4. Acomodamos el proceso si el CPU está libre
+    // 2. Si el CPU está libre (ya sea porque terminó uno o estaba vacío), despachar el siguiente
     if (!procesoEnEjecucion && listos.length > 0) {
         procesoEnEjecucion = listos.shift();
+        
         if (!procesoEnEjecucion.fueEjecutado) {
             procesoEnEjecucion.tiempoRespuesta = relojGlobal - procesoEnEjecucion.tiempoLlegada;
             procesoEnEjecucion.fueEjecutado = true;
         }
     }
-
-    // 5. Ejecutar el proceso actual
-    if (procesoEnEjecucion) {
-        procesoEnEjecucion.tiempoTranscurrido++;
-        procesoEnEjecucion.tiempoServicio++;
-        if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tme) {
-            terminarProceso(false); // Termina normalmente
-        }
-    }
     
-    // 6. Verificar si la simulación ha terminado
     if (nuevos.length === 0 && listos.length === 0 && bloqueados.length === 0 && !procesoEnEjecucion) {
         finalizarSimulacion();
     }
@@ -137,7 +150,6 @@ const tick = () => {
 };
 
 const manejarBloqueados = () => {
-    // Se itera al revés para que podamos eliminar elementos sin afectar el índice
     for (let i = bloqueados.length - 1; i >= 0; i--) {
         const proc = bloqueados[i];
         proc.tiempoEnBloqueado++;
@@ -150,8 +162,7 @@ const manejarBloqueados = () => {
 };
 
 const admitirNuevos = () => {
-    const procesosEnMemoria = listos.length + bloqueados.length + (procesoEnEjecucion ? 1 : 0);
-    if (procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA && nuevos.length > 0) {
+    while (listos.length + bloqueados.length + (procesoEnEjecucion ? 1 : 0) < MAX_PROCESOS_EN_MEMORIA && nuevos.length > 0) {
         const procesoAAdmitir = nuevos.shift();
         procesoAAdmitir.tiempoLlegada = relojGlobal;
         listos.push(procesoAAdmitir);
@@ -161,7 +172,6 @@ const admitirNuevos = () => {
 const terminarProceso = (esError) => {
     if (!procesoEnEjecucion) return;
 
-    // Calcular resultado
     if (esError) {
         procesoEnEjecucion.resultado = "ERROR";
         procesoEnEjecucion.estadoFinal = "Error";
@@ -170,13 +180,13 @@ const terminarProceso = (esError) => {
         procesoEnEjecucion.estadoFinal = "Normal";
     }
 
-    // Calcular tiempos finales
     procesoEnEjecucion.tiempoFinalizacion = relojGlobal;
     procesoEnEjecucion.tiempoRetorno = procesoEnEjecucion.tiempoFinalizacion - procesoEnEjecucion.tiempoLlegada;
     
     terminados.push(procesoEnEjecucion);
-    procesoEnEjecucion = null;
+    procesoEnEjecucion = null; // Dejar el CPU libre
 };
+
 
 const finalizarSimulacion = () => {
     clearInterval(simuladorIntervalo);
@@ -184,7 +194,6 @@ const finalizarSimulacion = () => {
     estadoSimulacionSpan.textContent = "¡Simulación finalizada!";
     estadoSimulacionSpan.style.color = "lightgreen";
     
-    // Ocultar simulación y mostrar reporte
     simulacionContenedor.classList.remove('enableCont');
     simulacionContenedor.classList.add('disableCont');
     reporteFinalContenedor.classList.remove('disableCont');
@@ -193,20 +202,16 @@ const finalizarSimulacion = () => {
     mostrarReporteFinal();
 };
 
-// Actualizar DOM
+// Actualizar DOM (sin cambios)
 const actualizarUI = () => {
-    // Nuevos
     procesosNuevosSpan.textContent = nuevos.length;
-    // Tiempo
     relojGlobalH3.textContent = `Contador Global: ${relojGlobal}s`;
 
-    // Cola de Listos
     colaListosBody.innerHTML = '';
     listos.forEach(proc => {
         colaListosBody.innerHTML += `<tr><td>${proc.id}</td><td>${proc.tme}</td><td>${proc.tiempoTranscurrido}</td></tr>`;
     });
 
-    // Proceso en Ejecución
     if (procesoEnEjecucion) {
         const tiempoRestante = procesoEnEjecucion.tme - procesoEnEjecucion.tiempoTranscurrido;
         procesoEnEjecucionInfo.innerHTML = `
@@ -221,13 +226,11 @@ const actualizarUI = () => {
         procesoEnEjecucionInfo.innerHTML = '<p>Proceso Nulo...</p>';
     }
     
-    // Cola de Bloqueados
     colaBloqueadosBody.innerHTML = '';
     bloqueados.forEach(proc => {
         colaBloqueadosBody.innerHTML += `<tr><td>${proc.id}</td><td>${proc.tiempoEnBloqueado} / ${TIEMPO_BLOQUEADO}s</td></tr>`;
     });
 
-    // Procesos Terminados
     procesosTerminadosBody.innerHTML = '';
     terminados.forEach(proc => {
         const resultadoFormateado = (typeof proc.resultado === 'number') ? proc.resultado.toFixed(2) : proc.resultado;
@@ -248,10 +251,10 @@ const mostrarReporteFinal = () => {
 
                 <td>${proc.tiempoLlegada}</td>
                 <td>${proc.tiempoFinalizacion}</td>
-                <td>${proc.tiempoServicio}</td>
-                <td>${proc.tiempoEspera}</td>
-                <td>${proc.tiempoRespuesta}</td>
                 <td>${proc.tiempoRetorno}</td>
+                <td>${proc.tiempoRespuesta}</td>
+                <td>${proc.tiempoEspera}</td>
+                <td>${proc.tiempoServicio}</td>
                 <td>${proc.tme}</td>
             </tr>
         `;
@@ -270,6 +273,7 @@ document.addEventListener('keydown', (e) => {
                 procesoEnEjecucion.tiempoEnBloqueado = 0;
                 bloqueados.push(procesoEnEjecucion);
                 procesoEnEjecucion = null;
+                // La lógica principal en tick() se encargará de despachar el siguiente
                 actualizarUI();
             }
             break;
