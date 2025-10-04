@@ -116,14 +116,11 @@ const tick = () => {
     relojGlobal++;
 
     manejarBloqueados();
-
-    // 1. Primero, incrementamos el tiempo de los que YA ESTABAN esperando.
-    listos.forEach(p => p.tiempoEspera++);
     
     // 2. Después, admitimos a los nuevos.
     admitirNuevos();
 
-    // 1. Manejar el proceso actualmente en ejecución
+    // 3. Manejar el proceso actualmente en ejecución
     if (procesoEnEjecucion) {
         procesoEnEjecucion.tiempoTranscurrido++;
         procesoEnEjecucion.tiempoServicio++;
@@ -132,7 +129,7 @@ const tick = () => {
         }
     }
 
-    // 2. Si el CPU está libre (ya sea porque terminó uno o estaba vacío), despachar el siguiente
+    // 4. Si el CPU está libre (ya sea porque terminó uno o estaba vacío), despachar el siguiente
     if (!procesoEnEjecucion && listos.length > 0) {
         procesoEnEjecucion = listos.shift();
         
@@ -182,6 +179,7 @@ const terminarProceso = (esError) => {
 
     procesoEnEjecucion.tiempoFinalizacion = relojGlobal;
     procesoEnEjecucion.tiempoRetorno = procesoEnEjecucion.tiempoFinalizacion - procesoEnEjecucion.tiempoLlegada;
+    procesoEnEjecucion.tiempoEspera = procesoEnEjecucion.tiempoRetorno - procesoEnEjecucion.tiempoServicio;
     
     terminados.push(procesoEnEjecucion);
     procesoEnEjecucion = null; // Dejar el CPU libre
