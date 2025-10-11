@@ -7,27 +7,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sistemas Operativos - FCFS</title>
 
-    <link rel="stylesheet" href="./css/styles_fcfs.css">
+    <link rel="stylesheet" href="./css/fcfs_2_styles.css">
     <link rel="stylesheet" href="./css/styles_bg.css">
     <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
-
 </head>
 
 <body>
     <canvas id='orbGen'></canvas>
 
-    <!-- Menu -->
-
-	<nav id="mainNav">
-		<ul>
-			<a href="../index.html"><li>Inicio</li></a>
-			<a href="./lotes.html"><li>Lotes</li></a>
-			<a href="./multiprogramacion.html"><li>Multi</li></a>
-			<a href="#"><li>FCFS</li></a>
-			<a href="./fcfs_2.html"><li>FCFS2</li></a>
-			<li>Ayuda</li>
-		</ul>
-	</nav>
+    <nav id="mainNav">
+        <ul>
+            <a href="../index.html"><li>Inicio</li></a>
+            <a href="./lotes.html"><li>Lotes</li></a>
+            <a href="./multiprogramacion.html"><li>Multi</li></a>
+            <a href="./fcfs.html"><li>FCFS</li></a>
+            <a href="./fcfs_2.html"><li>FCFS2</li></a>
+            <li>Ayuda</li>
+        </ul>
+    </nav>
 
     <div class="contForm">
         <div class="form lotes" id="formInicial">
@@ -49,8 +46,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>TME</th>
-                                    <th>TT</th>
-                                </tr>
+                                    <th>T. Restante</th> </tr>
                             </thead>
                             <tbody id="colaListosBody">
                             </tbody>
@@ -130,9 +126,34 @@
 
     </div>
 
+    <div id="bcpModal" class="modal-overlay disableCont">
+        <div class="modal-content">
+            <h2>Tabla de Procesos (BCP)</h2>
+            <div class="modal-table-container">
+                <table id="bcpTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Estado</th>
+                            <th>Operación</th>
+                            <th>Resultado</th>
+                            <th>T. Llegada</th>
+                            <th>T. Finalización</th>
+                            <th>T. Retorno</th>
+                            <th>T. Respuesta</th>
+                            <th>T. Espera (Actual)</th>
+                            <th>T. Servicio (Actual)</th>
+                            <th>T. Restante CPU</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bcpTableBody"></tbody>
+                </table>
+            </div>
+            <button id="closeBcpModal">Continuar</button>
+        </div>
+    </div>
     <script src="./js/bg.js"></script>
-    <script src="./js/fcfsInfo.js"></script>
+    <script src="./js/fcfs_2info.js"></script>
 
 </body>
-
 </html>

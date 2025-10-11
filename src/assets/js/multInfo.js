@@ -87,12 +87,12 @@ btnIniciar.addEventListener("click", () => {
 
 const iniciarMotorSimulacion = () => {
     if (lotes.length > 0) {
-        simuladorIntervalo = setInterval(tick, 1000);
+        simuladorIntervalo = setInterval(mainEjecucion, 1000);
         actualizarUI();
     }
 }
 
-const tick = () => {
+const mainEjecucion = () => {
     if (estaPausado) return;
     relojGlobal++;
 

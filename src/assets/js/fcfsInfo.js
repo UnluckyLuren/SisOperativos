@@ -106,12 +106,12 @@ btnIniciar.addEventListener("click", () => {
 
 const iniciarMotorSimulacion = () => {
     if (!simuladorIntervalo) {
-        simuladorIntervalo = setInterval(tick, 1000);
+        simuladorIntervalo = setInterval(mainEjecucion, 1000);
     }
     actualizarUI();
 };
 
-const tick = () => {
+const mainEjecucion = () => {
     if (estaPausado) return;
     relojGlobal++;
 
@@ -197,7 +197,7 @@ const finalizarSimulacion = () => {
     reporteFinalContenedor.classList.remove('disableCont');
     reporteFinalContenedor.classList.add('enableCont');
 
-    mostrarReporteFinal();
+    verTablaFinalDatos();
 };
 
 // Actualizar DOM (sin cambios)
@@ -236,7 +236,7 @@ const actualizarUI = () => {
     });
 };
 
-const mostrarReporteFinal = () => {
+const verTablaFinalDatos = () => {
     reporteFinalBody.innerHTML = '';
     terminados.forEach(proc => {
         const resultadoFormateado = (typeof proc.resultado === 'number') ? proc.resultado.toFixed(2) : proc.resultado;
@@ -271,7 +271,7 @@ document.addEventListener('keydown', (e) => {
                 procesoEnEjecucion.tiempoEnBloqueado = 0;
                 bloqueados.push(procesoEnEjecucion);
                 procesoEnEjecucion = null;
-                // La lógica principal en tick() se encargará de despachar el siguiente
+                // La lógica principal en mainEjecucion() se encargará de despachar el siguiente
                 actualizarUI();
             }
             break;
