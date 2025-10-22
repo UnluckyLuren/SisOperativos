@@ -1,0 +1,402 @@
+:root {
+    --Color-Menu: rgba(55, 55, 59, 0.986);
+    --Color-hover: #4e4c5c;
+    --Text-bck-shadow: 2px 2px 2px black, 2px -2px 2px black, -2px 2px 2px black, -2px -2px 2px black;
+    --Color-User-page: rgba(46, 46, 46, 0.897);
+    --Color-BG-sections: #626262;
+    --Color-text-section-examples: #23212e;
+    --color-page: #f0f0f0;
+    --shadow: 0.5em 0.5em 0.5em rgba(0, 0, 0, 0.589);
+    --shadow-content-promove: 0.5em 0.5em 0.5em rgba(218, 218, 218, 0.589);
+    --Border-bootom-white: 2px solid rgba(228, 228, 228, 0.924);
+    --Color-BG-Public-User: #979797;
+    --Col-Background: rgba(221, 221, 221, 0.315);
+    --Shadow-CTG: 0 4px 3px rgba(0, 0, 0, 0.5);
+    --Separation-aside: 5px solid #f1f1f1;
+    --color-formulario: rgba(51, 51, 51, 0.61);
+    --color-lineas: rgba(255, 255, 255, 0.959);
+    --color-fondo: repeating-linear-gradient(skyblue 0, skyblue 5px, orange 5px, orange 10px);
+    --color-sombra: 0 10px 10px 0 rgba(90, 116, 148, 0.3);
+    --sombras: rgba(0, 0, 0, 0.3);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Estilos form */
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,900');
+
+html,
+body {
+    height: 100vh;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #00171F;
+    color: #FAFAFA;
+}
+
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.form {
+    max-width: 670px;
+    margin: 60px auto;
+    z-index: 1;
+    background-color: var(--sombras);
+    padding: 2em;
+    border-radius: 1em;
+    transition: all ease-in-out 0.2s 0.2s;
+}
+
+.form__button {
+    height: 40px;
+    border: none;
+    background-color: #00703f;
+    color: #FAFAFA;
+    text-transform: uppercase;
+    font-family: 'Source Sans Pro', sans-serif;
+    padding: 0 20px;
+    border-radius: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    margin: 40px 0;
+    transition: all .25s ease-in-out;
+    z-index: 2;
+}
+
+.form__button:hover,
+.form__button:focus {
+    background-color: #00824A;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .25);
+    outline: none;
+}
+
+input[type="number"] {
+    height: auto;
+    width: 8em;
+    padding: 10px;
+    background: transparent;
+    margin: 0;
+    position: relative;
+    font-size: larger;
+    z-index: 2;
+    color: white;
+    border-radius: 1em;
+    text-align: center;
+}
+
+.lotes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15em;
+}
+
+.descripcion {
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+
+/* --- INICIO: Estilos añadidos --- */
+.form-group {
+    margin-bottom: 1.5em;
+    text-align: center;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+.procesos-datos-generales {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.procesos-tiempo.quantum {
+    background-color: #fAD7A0;
+    border: 1px solid #F5B041;
+}
+
+/* --- FIN: Estilos añadidos --- */
+
+.disableCont {
+    opacity: 0;
+    transition: all ease-in-out 0.2s 0.2s;
+    pointer-events: none;
+    display: none;
+}
+
+.enableCont {
+    opacity: 1;
+    pointer-events: all;
+    display: block;
+}
+
+
+/* Estilos de la simulación */
+
+.procesos-contenedor {
+    max-width: 1000px;
+    margin: 20px auto;
+    z-index: 10;
+}
+
+.procesos-titulo {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 5px;
+}
+
+.procesos-tabla-contenedor {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.procesos-columna {
+    background-color: #EAECEE;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    border: 1px solid #D5D8DC;
+    overflow: hidden;
+}
+
+.procesos-columna-titulo {
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.columna-contenido {
+    padding: 15px;
+    color: #333;
+}
+
+/* Estilos de Tablas */
+.procesos-tabla-listos,
+.procesos-tabla-bloqueados,
+.procesos-tabla-terminados {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.procesos-tabla-listos th,
+.procesos-tabla-bloqueados th,
+.procesos-tabla-terminados th {
+    background-color: #5DADE2;
+    color: white;
+    padding: 8px;
+    text-align: center;
+}
+
+.procesos-tabla-listos td,
+.procesos-tabla-bloqueados td,
+.procesos-tabla-terminados td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.procesos-tabla-listos tr:nth-child(even),
+.procesos-tabla-bloqueados tr:nth-child(even),
+.procesos-tabla-terminados tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+/* Estilos para la columna de Ejecución */
+.procesos-info-ejecucion {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e8f4fc;
+    border-radius: 5px;
+}
+
+.procesos-info-linea {
+    margin-bottom: 8px;
+    padding: 5px;
+}
+
+.procesos-tiempos {
+    margin-top: 20px;
+}
+
+.procesos-tiempo {
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #d6eaf8;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.cont {
+    color: white;
+    margin: 1em;
+    text-align: center;
+}
+
+.estado-simulacion {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Estilos Reporte Final */
+.reporte-final-contenedor {
+    background-color: #f8f9f9;
+    color: #333;
+    padding: 2em;
+    border-radius: 1em;
+    max-width: 1200px;
+    margin: 40px auto;
+    z-index: 100;
+    transition: all ease-in 0.2s 0.2s;
+}
+
+.reporte-final-contenedor h2 {
+    text-align: center;
+    margin-bottom: 1.5em;
+    color: #2c3e50;
+}
+
+#tablaReporteFinal {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tablaReporteFinal th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+#tablaReporteFinal th,
+#tablaReporteFinal td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#tablaReporteFinal tbody tr:nth-child(odd) {
+    background-color: #eaf2f8;
+}
+
+
+@media (max-width: 1200px) {
+    .procesos-tabla-contenedor {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .procesos-tabla-contenedor {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* NUEVOS ESTILOS PARA LA VENTANA MODAL BCP */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--color-page);
+    color: var(--Color-text-section-examples);
+    padding: 25px;
+    border-radius: 10px;
+    width: 95%;
+    max-width: 1400px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--Color-Menu);
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--Color-Menu);
+    text-shadow: 1px 1px 2px var(--sombras);
+}
+
+.modal-table-container {
+    overflow-y: auto;
+}
+
+#bcpTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#bcpTable th,
+#bcpTable td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+#bcpTable th {
+    background-color: var(--Color-hover);
+    color: var(--color-page);
+    position: sticky;
+    top: 0;
+}
+
+#bcpTable tbody tr:nth-child(odd) {
+    background-color: #ddd;
+}
+
+#bcpTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+#closeBcpModal {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #00703f;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    align-self: center;
+    font-weight: 900;
+    text-transform: uppercase;
+    transition: all .25s ease-in-out;
+}
+
+#closeBcpModal:hover {
+    background-color: #00824A;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .25);
+}

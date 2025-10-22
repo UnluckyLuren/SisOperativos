@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sistemas Operativos - FCFS</title>
+    <title>Sistemas Operativos - Round Robin</title>
 
-    <link rel="stylesheet" href="./css/fcfs_2_styles.css">
+    <link rel="stylesheet" href="./css/rr_styles.css">
     <link rel="stylesheet" href="./css/styles_bg.css">
     <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
 </head>
@@ -15,27 +15,39 @@
 <body>
     <canvas id='orbGen'></canvas>
 
-    <nav id="mainNav">
-        <ul>
-            <a href="../index.html"><li>Inicio</li></a>
-            <a href="./lotes.html"><li>Lotes</li></a>
-            <a href="./multiprogramacion.html"><li>Multi</li></a>
-            <a href="./fcfs.html"><li>FCFS</li></a>
-            <a href="./fcfs_2.html"><li>FCFS2</li></a>
-            <a href="./rr.html"><li>RR</li></a>
-        </ul>
-    </nav>
+    <!-- Menu -->
+
+	<nav id="mainNav">
+		<ul>
+			<a href="../index.html"><li>Inicio</li></a>
+			<a href="./lotes.html"><li>Lotes</li></a>
+			<a href="./multiprogramacion.html"><li>Multi</li></a>
+			<a href="./fcfs.html"><li>FCFS</li></a>
+			<a href="./fcfs_2.html"><li>FCFS2</li></a>
+			<a href="#"><li>RR</li></a>
+		</ul>
+	</nav>
 
     <div class="contForm">
         <div class="form lotes" id="formInicial">
-            <legend class="form__question descripcion">¿Cuántos procesos quieres realizar?</legend>
-            <input type="number" min="1" id="numProcesos" value="1">
-            <button class="form__button" type="submit" id="iniciarSimulacion">Iniciar</button>
+            <legend class="form__question descripcion">Configuración</legend>
+            <div class="form-group">
+                <label for="numProcesos">¿Cuántos procesos quieres realizar?</label>
+                <input type="number" min="1" id="numProcesos" value="1">
+            </div>
+            <div class="form-group">
+                <label for="quantumInput">¿Valor del Quantum?</label>
+                <input type="number" min="1" id="quantumInput" value="1">
+            </div>
+            <button class="form__button" type="button" id="iniciarSimulacion">Iniciar</button>
         </div>
 
         <div class="procesos-contenedor disableCont" id="simulacionContenedor">
-            <div class="procesos-titulo">Planificación FCFS</div>
-            <div class="procesos-nuevos-pendientes">Procesos en Nuevo: <span id="procesosNuevosSpan">0</span></div>
+            <div class="procesos-titulo">Planificación Round-Robin</div>
+            <div class="procesos-datos-generales">
+                <span>Procesos en Nuevo: <strong id="procesosNuevosSpan">0</strong></span>
+                <span>Quantum: <strong id="quantumValorSpan">0</strong>s</span>
+            </div>
 
             <div class="procesos-tabla-contenedor">
                 <div class="procesos-columna">
@@ -46,7 +58,8 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>TME</th>
-                                    <th>T. Restante</th> </tr>
+                                    <th>T. Restante</th>
+                                </tr>
                             </thead>
                             <tbody id="colaListosBody">
                             </tbody>
@@ -100,7 +113,7 @@
             <h3 id="relojGlobal" class="cont">Contador Global: 0s</h3>
             <div id="estadoSimulacion" class="estado-simulacion" style="margin-top: 15px;"></div>
         </div>
-        
+
         <div class="reporte-final-contenedor disableCont" id="reporteFinalContenedor">
             <h2>Reporte Final de Procesos</h2>
             <table id="tablaReporteFinal">
@@ -152,8 +165,10 @@
             <button id="closeBcpModal">Continuar</button>
         </div>
     </div>
+
     <script src="./js/bg.js"></script>
-    <script src="./js/fcfs_2info.js"></script>
+    <script src="./js/rrInfo.js"></script>
 
 </body>
+
 </html>
