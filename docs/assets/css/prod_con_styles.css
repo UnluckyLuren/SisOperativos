@@ -1,0 +1,135 @@
+:root {
+    --color-fondo: #3E2723; /* Marrón oscuro para el fondo */
+    --color-panel: #6D4C41; /* Marrón medio para los paneles */
+    --color-estante: #A1887F; /* Marrón claro para el estante */
+    --color-texto: #EFEBE9;
+    --color-borde: #D7CCC8;
+    --color-productor: #81C784; /* Verde para el bibliotecario */
+    --color-consumidor: #FFB74D; /* Naranja para el cliente */
+}
+
+html,
+body {
+    font-family: 'Georgia', serif;
+    height: 100vh;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #00171F;
+    color: #FAFAFA;
+}
+
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.simulacion-contenedor {
+    width: 90%;
+    max-width: 1000px;
+    background-color: var(--color-panel);
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    border: 3px solid #4E342E;
+    margin: 80px auto;
+}
+
+.simulacion-contenedor p {
+    margin-top: 1em;
+}
+
+.titulo {
+    margin-top: 0;
+    color: var(--color-texto);
+    font-family: 'Cursive', fantasy;
+    font-size: 2.5em;
+}
+
+.instrucciones {
+    color: var(--color-borde);
+    margin-bottom: 2em;
+}
+
+.estante-contenedor {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 10px;
+    background-color: #5D4037; /* Madera del estante */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 2em;
+    border: 5px solid #4E342E;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.espacio-libro {
+    height: 100px; /* Altura para acomodar la imagen del libro */
+    background-color: var(--color-estante);
+    border: 2px solid #4E342E;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: background-color 0.3s ease;
+    overflow: hidden; /* Para que la imagen no se salga */
+}
+
+.espacio-numero {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 0.6em;
+    color: #5D4037;
+    font-weight: bold;
+}
+
+.espacio-libro img {
+    height: 90%;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.espacio-libro.ocupado img:hover {
+    transform: scale(1.1);
+}
+
+.paneles-contenedor {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.panel {
+    flex: 1;
+    background-color: #5D4037;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    border: 2px solid #4E342E;
+}
+
+.panel-titulo {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-borde);
+}
+
+#productor-panel .panel-titulo { color: var(--color-productor); }
+#consumidor-panel .panel-titulo { color: var(--color-consumidor); }
+
+.panel-info p { margin: 0.5em 0; }
+.panel-info strong { color: var(--color-borde); }
+
+.mensaje-final {
+    margin-top: 2em;
+    font-size: 2em;
+    font-weight: bold;
+    color: #E57373; /* Rojo claro para el mensaje final */
+}
+
+.disable { display: none; }
+.enable { display: block; }
+
+
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas Operativos - Productor-Consumidor</title>
+    
+    <link rel="stylesheet" href="./css/prod_con_styles.css">
+    <link rel="stylesheet" href="./css/rr_styles.css">
+    <link rel="stylesheet" href="./css/styles_bg.css">
+    
+    <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
+</head>
+<body>
+    
+    <canvas id='orbGen'></canvas>
+    
+    <!-- Menu -->
+
+    <nav id="mainNav">
+		<ul>
+			<a href="../index.html"><li>Inicio</li></a>
+			<a href="./lotes.html"><li>Lotes</li></a>
+			<a href="./multiprogramacion.html"><li>Multi</li></a>
+			<a href="./fcfs.html"><li>FCFS</li></a>
+			<a href="./fcfs_2.html"><li>FCFS2</li></a>
+			<a href="./rr.html"><li>RR</li></a>
+            <a href="#"><li>PC</li></a>
+		</ul>
+	</nav>
+
+   <div class="simulacion-contenedor">
+        <h1 class="titulo">Librería "Opeth"</h1>
+        <p class="instrucciones">El bibliotecario añade libros al estante y el cliente los retira. Presiona 'ESC' para terminar.</p>
+
+        <div id="estante-display" class="estante-contenedor">
+            </div>
+
+        <div class="paneles-contenedor">
+            <div class="panel" id="productor-panel">
+                <h2 class="panel-titulo">Bibliotecario (Productor)</h2>
+                <div class="panel-info">
+                    <p><strong>Estado:</strong> <span id="productor-estado">Iniciando...</span></p>
+                    <p><strong>Próximo Espacio:</strong> <span id="productor-indice">1</span></p>
+                </div>
+            </div>
+
+            <div class="panel" id="consumidor-panel">
+                <h2 class="panel-titulo">Cliente (Consumidor)</h2>
+                <div class="panel-info">
+                    <p><strong>Estado:</strong> <span id="consumidor-estado">Iniciando...</span></p>
+                    <p><strong>Próximo Libro:</strong> <span id="consumidor-indice">1</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mensaje-final" class="mensaje-final disable">
+            Simulación Finalizada
+        </div>
+    </div>
+
+    <script src="./js/bg.js"></script>
+    <script src="./js/prod_conInfo.js"></script>
+</body>
+</html>
