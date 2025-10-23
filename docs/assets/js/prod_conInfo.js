@@ -3,37 +3,13 @@ const cantEstante = 18;
 const minimoTransaccion = 3;
 const maximoTransaccion = 6;
 const nadota = '';
+const numLib = 28; // Cantidad de libros en imagenes
 
-const librosDir = [
-    './img/Libros/_El Fin de la Eternidad_ de Isaac Asimov_ Uno de….jpeg',
-    './img/Libros/_Permutation City_ by Greg Egan.jpeg',
-    './img/Libros/¿Sueñan los androides con ovejas eléctricas_ de….jpeg',
-    './img/Libros/2e01c8e4-7b69-45c4-8c32-793a07e25e1e.jpeg',
-    './img/Libros/1993 - Un fuego sobre el abismo (Vernor Vinge)….jpeg',
-    './img/Libros/descarga.jpeg',
-    './img/Libros/EL LIBRO DEL DÍA _El problema de los tres….jpeg',
-    './img/Libros/EL LIBRO DEL DÍA_ “Dune”, de Frank Herbert_    ¿Lo….jpeg',
-    './img/Libros/Espacio Revelacion.jpeg',
-    './img/Libros/fantastic vintage science fiction art by….jpeg',
-    './img/Libros/Foundation, Isaac Asimov.jpeg',
-    './img/Libros/Foundations Edge -- the first three were the best….jpeg',
-    './img/Libros/Frank Herbert - God Emperor of Dune.jpeg',
-    './img/Libros/HYPERION (1989) DAN SIMMONS.jpeg',
-    './img/Libros/Hyperion, de Dan Simmons.jpeg',
-    './img/Libros/Isaac Asimov - Second Foundation.jpeg',
-    './img/Libros/Isaac Asimov The Caves of Steel.jpeg',
-    './img/Libros/Isaac Asimov_ Nemesis_ Bantam Books 1990_.jpeg',
-    './img/Libros/La estrella de Pandora.jpeg',
-    './img/Libros/Los Señores de la Instrumentalidad 3_ Norstrilia….jpeg',
-    './img/Libros/Philip K Dick - The Crack in Space _ Flickr….jpeg',
-    './img/Libros/Robert Heinlein - one of my favourites_  This book….jpeg',
-    './img/Libros/Robots & Empire - Isaac Asimov.jpeg',
-    './img/Libros/scificovers_ The End of Eternity by Isaac Asimov….jpeg',
-    './img/Libros/Solaris; Stanislaw Lem.jpeg',
-    './img/Libros/The War Of The Worlds.jpeg',
-    './img/Libros/ubik-yugo.jpg',
-    'img/Libros/Un universo de Ciencia Ficción_ 1950- CRÓNICAS….jpeg'
-];
+const librosDir = [];
+
+for (let i = 1; i < (numLib+1); i++) {
+    librosDir.push(`img/Libros/${i}.jpeg`);
+}
 
 // índice para saber qué libro del catálogo sigue.
 let siguienteLibroIndex = 0;
