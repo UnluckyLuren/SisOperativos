@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sistemas Operativos - RR con Paginación</title>
+
+    <link rel="stylesheet" href="./css/styles_bg.css">
+    <link rel="stylesheet" href="./css/styles_pag.css">
+
+    <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
+</head>
+
+<body>
+    <canvas id='orbGen'></canvas>
+
+   <!-- Menu -->
+
+	<nav id="mainNav">
+		<ul>
+			<a href="../index.html"><li>Inicio</li></a>
+			<a href="./lotes.html"><li>Lotes</li></a>
+			<a href="./multiprogramacion.html"><li>Multi</li></a>
+			<a href="./fcfs.html"><li>FCFS</li></a>
+			<a href="./fcfs_2.html"><li>FCFS2</li></a>
+			<a href="./rr.html"><li>RR</li></a>
+            <a href="./prod_con.html"><li>PC</li></a>
+            <a href="#"><li>Pag</li></a>
+		</ul>
+	</nav>
+
+    <div class="contForm">
+        <div class="form lotes" id="formInicial">
+            <legend class="form__question descripcion">Datos de inicialización</legend>
+            <div class="form-group">
+                <label for="numProcesos">¿Cuántos procesos quieres realizar?</label>
+                <input type="number" min="1" id="numProcesos">
+            </div>
+            <div class="form-group">
+                <label for="quantumInput">¿Valor del Quantum?</label>
+                <input type="number" min="1" id="quantumInput">
+            </div>
+            <button class="form__button" type="button" id="iniciarSimulacion">Iniciar</button>
+        </div>
+
+        <div class="procesos-contenedor disableCont" id="simulacionContenedor">
+            <div class="procesos-titulo">Paginación Simple</div>
+            <div class="procesos-datos-generales">
+                <span>Nuevos: <strong id="procesosNuevosSpan">0</strong></span>
+                <span>Quantum: <strong id="quantumValorSpan">0</strong>s</span>
+                <span id="proximoProcesoInfo" class="info-next">Siguiente: -</span>
+            </div>
+
+            <div class="layout-principal">
+                
+                <div class="columna-listas">
+                    <div class="procesos-tabla-contenedor">
+                        <div class="procesos-columna">
+                            <div class="procesos-columna-titulo">Cola de Listos</div>
+                            <div class="columna-contenido">
+                                <table class="procesos-tabla-listos">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>TME</th>
+                                            <th>T.Rest</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="colaListosBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="procesos-columna">
+                            <div class="procesos-columna-titulo">Ejecución</div>
+                            <div class="columna-contenido">
+                                <div id="procesoEnEjecucionInfo" class="procesos-info-ejecucion">
+                                    <p>Esperando...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="procesos-columna">
+                            <div class="procesos-columna-titulo">Bloqueados</div>
+                            <div class="columna-contenido">
+                                <table class="procesos-tabla-bloqueados">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>T.Bloq</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="colaBloqueadosBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="procesos-columna">
+                            <div class="procesos-columna-titulo">Terminados</div>
+                            <div class="columna-contenido">
+                                <table class="procesos-tabla-terminados">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>OP</th>
+                                            <th>RES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="procesosTerminadosBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columna-memoria">
+                    <div class="procesos-columna-titulo">Memoria Principal</div>
+                    <div class="leyenda-memoria">
+                        <span class="item-leyenda"><span class="cuadro so"></span>SO</span>
+                        <span class="item-leyenda"><span class="cuadro listo"></span>Listo</span>
+                        <span class="item-leyenda"><span class="cuadro ejecucion"></span>Ejec</span>
+                        <span class="item-leyenda"><span class="cuadro bloqueado"></span>Bloq</span>
+                        <span class="item-leyenda"><span class="cuadro libre"></span>Libre</span>
+                    </div>
+                    <div id="memoriaGrid" class="memoria-grid"></div>
+                </div>
+
+            </div> <h3 id="relojGlobal" class="cont">Contador Global: 0s</h3>
+            <div id="estadoSimulacion" class="estado-simulacion" style="margin-top: 15px;"></div>
+        </div>
+
+        <div class="reporte-final-contenedor disableCont" id="reporteFinalContenedor">
+            <h2>Reporte Final de Procesos</h2>
+            <table id="tablaReporteFinal">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estado</th>
+                        <th>Op</th>
+                        <th>Res</th>
+                        <th>Llegada</th>
+                        <th>Fin</th>
+                        <th>Retorno</th>
+                        <th>Respuesta</th>
+                        <th>Espera</th>
+                        <th>Servicio</th>
+                    </tr>
+                </thead>
+                <tbody id="reporteFinalBody"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="bcpModal" class="modal-overlay disableCont">
+        <div class="modal-content">
+            <h2>Tabla de Procesos (BCP)</h2>
+            <div class="modal-table-container">
+                <table id="bcpTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Estado</th>
+                            <th>Op</th>
+                            <th>Res</th>
+                            <th>Llegada</th>
+                            <th>Fin</th>
+                            <th>Retorno</th>
+                            <th>Resp</th>
+                            <th>Espera</th>
+                            <th>Serv</th>
+                            <th>Restante</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bcpTableBody"></tbody>
+                </table>
+            </div>
+            <button id="closeBcpModal">Continuar (C)</button>
+        </div>
+    </div>
+
+    <div id="tablaPaginasModal" class="modal-overlay disableCont">
+        <div class="modal-content">
+            <h2>Tabla de Páginas</h2>
+            <div class="modal-table-container">
+                <table id="tablaPaginasTable">
+                    <thead>
+                        <tr>
+                            <th>ID Proceso</th>
+                            <th>Tamaño</th>
+                            <th>Páginas (Marcos Ocupados)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPaginasBody"></tbody>
+                </table>
+                <div id="infoMarcosLibres" style="margin-top: 15px; text-align: left; border-top: 1px solid #ccc; padding-top:10px;">
+                    <strong>Marcos Libres:</strong> <span id="listaMarcosLibres"></span>
+                </div>
+            </div>
+            <button id="closeTablaPaginasModal">Continuar (C)</button>
+        </div>
+    </div>
+
+    <script src="./js/bg.js"></script> 
+    <script src="./js/pagInfo.js"></script>
+
+</body>
+</html>
