@@ -445,13 +445,21 @@ const verVentanaBCP = () => {
         if(est !== 'Terminado' && est !== 'Nuevo') {
              espera = (relojGlobal - proc.tiempoLlegada) - servicio;
         }
-        if(est === 'Nuevo') { tRetorno = 0; espera = 0; }
+        if(est === 'Nuevo') { espera = 0; }
 
+        if (est === 'Terminado') {
+            tRetorno = tRetorno;
+        } else {
+            tRetorno = '-';
+        }
+
+        // <td>${tRetorno >=0 ? tRetorno : '-'}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
+        
         bcpTableBody.innerHTML += `<tr>
             <td>${proc.id}</td><td>${est}</td><td>${proc.operacionStr}</td>
             <td>${proc.resultado || '-'}</td><td>${proc.tiempoLlegada >=0 ? proc.tiempoLlegada : '-'}</td>
             <td>${proc.tiempoFinalizacion >=0 ? proc.tiempoFinalizacion : '-'}</td>
-            <td>${tRetorno >=0 ? tRetorno : '-'}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
+            <td>${tRetorno}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
             <td>${espera}</td><td>${servicio}</td><td>${proc.tme - servicio}</td>
         </tr>`;
     });
