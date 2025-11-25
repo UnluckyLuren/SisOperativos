@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sistemas Operativos - RR con Paginación</title>
+    <title>Sistemas Operativos - Suspendidos (Swap)</title>
 
     <link rel="stylesheet" href="./css/styles_bg.css">
-    <link rel="stylesheet" href="./css/styles_pag.css">
+    <link rel="stylesheet" href="./css/styles_pag_sus.css">
 
     <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
 </head>
@@ -16,9 +16,7 @@
 <body>
     <canvas id='orbGen'></canvas>
 
-   <!-- Menu -->
-
-	<nav id="mainNav">
+<nav id="mainNav">
 		<ul>
 			<a href="../index.html"><li>Inicio</li></a>
 			<a href="./lotes.html"><li>Lotes</li></a>
@@ -27,10 +25,11 @@
 			<a href="./fcfs_2.html"><li>FCFS2</li></a>
 			<a href="./rr.html"><li>RR</li></a>
             <a href="./prod_con.html"><li>PC</li></a>
-            <a href="#"><li>Pag</li></a>
-            <a href="./pagSus.html"><li>PagSus</li></a>
+            <a href="./pag.html"><li>Pag</li></a>
+            <a href="#"><li>PagSus</li></a>
 		</ul>
 	</nav>
+
 
     <div class="contForm">
         <div class="form lotes" id="formInicial">
@@ -47,11 +46,16 @@
         </div>
 
         <div class="procesos-contenedor disableCont" id="simulacionContenedor">
-            <div class="procesos-titulo">Paginación Simple</div>
+            <div class="procesos-titulo">Paginación con Suspensión (Swap)</div>
+            
             <div class="procesos-datos-generales">
                 <span>Nuevos: <strong id="procesosNuevosSpan">0</strong></span>
                 <span>Quantum: <strong id="quantumValorSpan">0</strong>s</span>
-                <span id="proximoProcesoInfo" class="info-next">Siguiente: -</span>
+                <span id="proximoProcesoInfo" class="info-next">Sig. Nuevo: -</span>
+            </div>
+            <div class="procesos-datos-generales" style="background: rgba(231, 76, 60, 0.2);">
+                <span>Suspendidos (Disco): <strong id="conteoSuspendidos">0</strong></span>
+                <span id="infoRetornoSuspendido" class="info-next">Próximo a regresar: Ninguno</span>
             </div>
 
             <div class="layout-principal">
@@ -62,13 +66,7 @@
                             <div class="procesos-columna-titulo">Cola de Listos</div>
                             <div class="columna-contenido">
                                 <table class="procesos-tabla-listos">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>TME</th>
-                                            <th>T.Rest</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>ID</th><th>TME</th><th>T.Rest</th></tr></thead>
                                     <tbody id="colaListosBody"></tbody>
                                 </table>
                             </div>
@@ -87,13 +85,18 @@
                             <div class="procesos-columna-titulo">Bloqueados</div>
                             <div class="columna-contenido">
                                 <table class="procesos-tabla-bloqueados">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>T.Bloq</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>ID</th><th>T.Bloq</th></tr></thead>
                                     <tbody id="colaBloqueadosBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="procesos-columna">
+                            <div class="procesos-columna-titulo" style="background-color: #e67e22;">Suspendidos (Swap)</div>
+                            <div class="columna-contenido">
+                                <table class="procesos-tabla-suspendidos">
+                                    <thead><tr><th>ID</th><th>Tam</th><th>Op</th></tr></thead>
+                                    <tbody id="colaSuspendidosBody"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -102,13 +105,7 @@
                             <div class="procesos-columna-titulo">Terminados</div>
                             <div class="columna-contenido">
                                 <table class="procesos-tabla-terminados">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>OP</th>
-                                            <th>RES</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>ID</th><th>OP</th><th>RES</th></tr></thead>
                                     <tbody id="procesosTerminadosBody"></tbody>
                                 </table>
                             </div>
@@ -137,16 +134,9 @@
             <table id="tablaReporteFinal">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Estado</th>
-                        <th>Op</th>
-                        <th>Res</th>
-                        <th>Llegada</th>
-                        <th>Fin</th>
-                        <th>Retorno</th>
-                        <th>Respuesta</th>
-                        <th>Espera</th>
-                        <th>Servicio</th>
+                        <th>ID</th><th>Estado</th><th>Op</th><th>Res</th>
+                        <th>Llegada</th><th>Fin</th><th>Retorno</th>
+                        <th>Respuesta</th><th>Espera</th><th>Servicio</th>
                     </tr>
                 </thead>
                 <tbody id="reporteFinalBody"></tbody>
@@ -162,17 +152,9 @@
                 <table id="bcpTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Estado</th>
-                            <th>Op</th>
-                            <th>Res</th>
-                            <th>Llegada</th>
-                            <th>Fin</th>
-                            <th>Retorno</th>
-                            <th>Resp</th>
-                            <th>Espera</th>
-                            <th>Serv</th>
-                            <th>Restante</th>
+                            <th>ID</th><th>Estado</th><th>Op</th><th>Res</th>
+                            <th>Llegada</th><th>Fin</th><th>Retorno</th><th>Resp</th>
+                            <th>Espera</th><th>Serv</th><th>Restante</th>
                         </tr>
                     </thead>
                     <tbody id="bcpTableBody"></tbody>
@@ -196,7 +178,7 @@
                     </thead>
                     <tbody id="tablaPaginasBody"></tbody>
                 </table>
-                <div id="infoMarcosLibres" style="margin-top: 15px; text-align: left; border-top: 1px solid #ccc; padding-top:10px;">
+                <div id="infoMarcosLibres" style="margin-top: 15px;">
                     <strong>Marcos Libres:</strong> <span id="listaMarcosLibres"></span>
                 </div>
             </div>
@@ -205,7 +187,6 @@
     </div>
 
     <script src="./js/bg.js"></script> 
-    <script src="./js/pagInfo.js"></script>
-
+    <script src="./js/pagSusInfo.js"></script>
 </body>
 </html>
