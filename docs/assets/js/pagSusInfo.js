@@ -561,6 +561,8 @@ document.addEventListener('keydown', (e) => {
                 procSuspendido.estado = 'Suspendido';
                 liberarMemoria(procSuspendido); // Libera marcos
                 suspendidos.push(procSuspendido);
+
+                descargarJSONSuspendidos();
                 actualizarUI();
             }
             break;
@@ -595,6 +597,21 @@ document.addEventListener('keydown', (e) => {
             break;
     }
 });
+
+function descargarJSONSuspendidos(nombreArchivo = "procesos_suspendidos.json") {
+    const dataStr = JSON.stringify(suspendidos, null, 2); // todos los suspendidos en un solo JSON
+    const blob = new Blob([dataStr], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+
+    // limpieza
+    URL.revokeObjectURL(url);
+}
 
 cerrarVentanaBCP.addEventListener('click', () => {
     bcpModal.classList.add('disableCont');
