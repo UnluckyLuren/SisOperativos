@@ -31,7 +31,7 @@ const listaMarcosLibres = document.getElementById('listaMarcosLibres');
 const cerrarTablaPaginasModal = document.getElementById('closeTablaPaginasModal');
 
 
-// --- CONSTANTES DE ACTIVIDAD 14 ---
+// --- CONSTANTES ---
 const TOTAL_MEMORIA = 240;
 const TAM_MARCO = 5;
 const TOTAL_MARCOS = TOTAL_MEMORIA / TAM_MARCO; // 48 Marcos
@@ -52,10 +52,9 @@ let estaPausado = false;
 let siguienteId = 1;
 
 // Estructuras de Memoria
-// memoria[i] = { idProceso: int|'SO'|null, estado: 'Libre'|'Listo'|..., slotsOcupados: int }
 let memoria = []; 
-let tablaPaginas = {}; // { idProceso: [marco1, marco2, ...] }
-let marcosLibres = []; // Lista de indices de marcos disponibles
+let tablaPaginas = {}; 
+let marcosLibres = []; 
 
 // --- GENERACIÓN DE PROCESOS ---
 const numeroAleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -66,25 +65,28 @@ const crearProcesoUnico = () => {
     const numA = numeroAleatorio(1, 100);
     const numB = (operacion === '/' || operacion === '%') ? numeroAleatorio(1, 100) : numeroAleatorio(0, 100);
     
-    // Requerimiento 3: Tamaño aleatorio entre 6 y 30
     const tamanio = numeroAleatorio(6, 30); 
-    // Requerimiento 7: Dividir en páginas
     const paginasNecesarias = Math.ceil(tamanio / TAM_MARCO);
 
     const nuevoProceso = {
         id: siguienteId++,
         operacionStr: `${numA} ${operacion} ${numB}`,
-        tme: numeroAleatorio(6, 16), // Tiempo aleatorio
+        tme: numeroAleatorio(6, 16),
         tamanio: tamanio,
         paginasReq: paginasNecesarias,
         resultado: null,
         estadoFinal: null,
-        tiempoLlegada: -1,
+        
+        // --- CONTROL DE TIEMPOS ---
+        tiempoLlegada: null, // Se asigna al entrar a LISTOS (Memoria)
+        esLoteInicial: false, // Bandera para saber si forzamos llegada 0 o usamos reloj
+        
         tiempoFinalizacion: -1,
         tiempoRetorno: -1,
         tiempoRespuesta: -1,
         tiempoEspera: 0,
         tiempoServicio: 0,
+        
         // Auxiliares
         tiempoEnBloqueado: 0,
         tiempoEnQuantum: 0,
@@ -100,7 +102,6 @@ const inicializarMemoria = () => {
     tablaPaginas = {};
 
     for(let i=0; i < TOTAL_MARCOS; i++) {
-        // Requerimiento 6 y 20.a: SO ocupa marcos 0-3
         if(i < MARCOS_SO) {
             memoria.push({ idProceso: 'SO', estado: 'SO', slotsOcupados: 5 });
         } else {
@@ -120,12 +121,11 @@ const renderMemoriaInicial = () => {
         
         const header = document.createElement('div');
         header.className = 'marco-header';
-        header.innerText = i; // Requerimiento 20.a: Señalar numero de marco
+        header.innerText = i; 
 
         const contenido = document.createElement('div');
         contenido.className = 'marco-contenido';
         
-        // 5 slots por marco para visualización de fragmentación
         for(let s=0; s<5; s++) {
             const slot = document.createElement('div');
             slot.className = 'slot';
@@ -151,20 +151,25 @@ btnIniciar.addEventListener("click", () => {
     quantum = quantumValor;
     nuevos = [];
     siguienteId = 1;
-    for (let i = 0; i < cantidad; i++) nuevos.push(crearProcesoUnico());
+    
+    // Generamos Lote Inicial
+    for (let i = 0; i < cantidad; i++) {
+        let proc = crearProcesoUnico();
+        proc.esLoteInicial = true; // MARCAMOS para que al entrar a listos su llegada sea 0
+        nuevos.push(proc);
+    }
     
     listos = []; bloqueados = []; terminados = []; procesoEnEjecucion = null;
     relojGlobal = 0; estaPausado = false;
 
     inicializarMemoria();
 
-    // UI Changes
     formInicial.classList.add('disableCont');
     simulacionContenedor.classList.remove('disableCont');
     simulacionContenedor.classList.add('enableCont');
     reporteFinalContenedor.classList.add('disableCont');
 
-    if (!simuladorIntervalo) simuladorIntervalo = setInterval(mainEjecucion, 1000); // Tick 1s
+    if (!simuladorIntervalo) simuladorIntervalo = setInterval(mainEjecucion, 1000); 
     actualizarUI();
 });
 
@@ -175,13 +180,21 @@ const mainEjecucion = () => {
     manejarBloqueados();
 
     // 2. Admisión (Planificador Largo Plazo)
-    // Requerimiento 9: Solo entra si hay marcos libres
     if (nuevos.length > 0) {
-        const proc = nuevos[0]; // Revisar el primero
+        const proc = nuevos[0]; 
         if (proc.paginasReq <= marcosLibres.length) {
             nuevos.shift();
-            proc.tiempoLlegada = relojGlobal;
-            proc.estado = 'Listo'; // Aunque variable interna, el estado real esta en memoria
+            
+            // --- AQUÍ SE ASIGNA EL TIEMPO DE LLEGADA ---
+            // Si es del lote inicial -> 0
+            // Si es nuevo (tecla N) -> relojGlobal
+            if (proc.esLoteInicial) {
+                proc.tiempoLlegada = 0;
+            } else {
+                proc.tiempoLlegada = relojGlobal;
+            }
+            
+            proc.estado = 'Listo'; 
             asignarMemoria(proc);
             listos.push(proc);
         }
@@ -196,7 +209,6 @@ const mainEjecucion = () => {
             terminarProceso(false);
         } else if (procesoEnEjecucion.tiempoEnQuantum >= quantum) {
             procesoEnEjecucion.tiempoEnQuantum = 0;
-            // Cambio de estado visual en memoria
             actualizarEstadoMemoria(procesoEnEjecucion.id, 'Listo');
             listos.push(procesoEnEjecucion);
             procesoEnEjecucion = null;
@@ -209,10 +221,10 @@ const mainEjecucion = () => {
         procesoEnEjecucion.tiempoEnQuantum = 0;
         
         if (!procesoEnEjecucion.fueEjecutado) {
+            // Tiempo Respuesta = Instante CPU 1ra vez - Tiempo Llegada
             procesoEnEjecucion.tiempoRespuesta = relojGlobal - procesoEnEjecucion.tiempoLlegada;
             procesoEnEjecucion.fueEjecutado = true;
         }
-        // Cambio de estado visual en memoria
         actualizarEstadoMemoria(procesoEnEjecucion.id, 'Ejecucion');
     }
 
@@ -232,13 +244,12 @@ const asignarMemoria = (proc) => {
     let tamRestante = proc.tamanio;
 
     for(let i=0; i < proc.paginasReq; i++) {
-        const marcoIdx = marcosLibres.shift(); // Obtener primer marco libre
+        const marcoIdx = marcosLibres.shift();
         tablaPaginas[proc.id].push(marcoIdx);
         
         memoria[marcoIdx].idProceso = proc.id;
         memoria[marcoIdx].estado = 'Listo';
         
-        // Fragmentación interna (Requerimiento 20.a)
         if(tamRestante >= TAM_MARCO) {
             memoria[marcoIdx].slotsOcupados = TAM_MARCO;
             tamRestante -= TAM_MARCO;
@@ -247,7 +258,6 @@ const asignarMemoria = (proc) => {
             tamRestante = 0;
         }
     }
-    // Ordenar marcos libres para limpieza visual (opcional)
     marcosLibres.sort((a,b) => a-b);
 };
 
@@ -278,7 +288,6 @@ const actualizarVisualMemoria = () => {
         const marcoEl = document.getElementById(`marco-${i}`);
         const slots = marcoEl.querySelectorAll('.slot');
 
-        // Limpiar clases previas
         slots.forEach(s => {
             s.className = 'slot'; 
             s.title = '';
@@ -287,13 +296,12 @@ const actualizarVisualMemoria = () => {
         if(m.estado !== 'Libre') {
             let clase = '';
             switch(m.estado) {
-                case 'SO': clase = 'so'; break; // Negro
-                case 'Listo': clase = 'listo'; break; // Azul
-                case 'Ejecucion': clase = 'ejecucion'; break; // Rojo
-                case 'Bloqueado': clase = 'bloqueado'; break; // Morado
+                case 'SO': clase = 'so'; break;
+                case 'Listo': clase = 'listo'; break;
+                case 'Ejecucion': clase = 'ejecucion'; break;
+                case 'Bloqueado': clase = 'bloqueado'; break;
             }
 
-            // Llenar slots ocupados (Fragmentación interna visual)
             for(let k=0; k < m.slotsOcupados; k++) {
                 slots[k].classList.add(clase);
             }
@@ -359,7 +367,6 @@ const actualizarUI = () => {
     quantumValorSpan.textContent = quantum;
     relojGlobalH3.textContent = `Contador Global: ${relojGlobal}s`;
 
-    // Requerimiento 20.b.i: Info del siguiente proceso a entrar
     if(nuevos.length > 0) {
         proximoProcesoInfo.innerHTML = `Siguiente ID: <strong>${nuevos[0].id}</strong> | Tam: <strong>${nuevos[0].tamanio}</strong> | Pags: <strong>${nuevos[0].paginasReq}</strong>`;
     } else {
@@ -406,7 +413,6 @@ const actualizarUI = () => {
 
 // --- MODALES ---
 const verTablaFinalDatos = () => {
-    
     reporteFinalBody.innerHTML = '';
     terminados.sort((a, b) => a.id - b.id).forEach(proc => {
         reporteFinalBody.innerHTML += `<tr>
@@ -422,10 +428,10 @@ const verTablaFinalDatos = () => {
 
 const verVentanaBCP = () => {
     bcpTableBody.innerHTML = '';
-    // Recopilar todos los procesos en memoria o terminados
+    
+    // Recopilar todos
     const todos = [...listos, ...bloqueados, ...terminados];
     if (procesoEnEjecucion) todos.push(procesoEnEjecucion);
-    // Agregamos nuevos también aunque no estén en memoria, para ver su estado
     nuevos.forEach(p => todos.push(p));
 
     todos.sort((a, b) => a.id - b.id);
@@ -437,44 +443,48 @@ const verVentanaBCP = () => {
         else if(bloqueados.includes(proc)) est = "Bloqueado";
         else if(terminados.includes(proc)) est = "Terminado";
 
-        // Cálculo dinámico para tiempos parciales
-        let espera = proc.tiempoEspera;
-        let servicio = proc.tiempoServicio;
-        let tRetorno = (est === 'Terminado') ? proc.tiempoRetorno : (relojGlobal - proc.tiempoLlegada);
-        
-        if(est !== 'Terminado' && est !== 'Nuevo') {
-             espera = (relojGlobal - proc.tiempoLlegada) - servicio;
-        }
-        if(est === 'Nuevo') { espera = 0; }
+        let espera = 0;
+        let tRetorno = '-';
+        // Si es lote inicial y sigue en Nuevo, visualmente podemos mostrar 0
+        // pero la variable real es null hasta que entre a memoria.
+        // Para visualización: Si es loteInicial -> '0', si no -> '-' (hasta que entre)
+        let llegadaStr = (proc.tiempoLlegada !== null) ? proc.tiempoLlegada : (proc.esLoteInicial ? '0 (Pendiente)' : '-');
 
-        if (est === 'Terminado') {
-            tRetorno = tRetorno;
-        } else {
-            tRetorno = '-';
+        if (proc.tiempoLlegada !== null) {
+            if (est === 'Terminado') {
+                tRetorno = proc.tiempoRetorno;
+                espera = proc.tiempoEspera;
+            } else {
+                // Formula: Espera = (Reloj - Llegada) - Servicio
+                espera = (relojGlobal - proc.tiempoLlegada) - proc.tiempoServicio;
+            }
+        } else if (proc.esLoteInicial && est === 'Nuevo') {
+            // Caso especial visual para lote inicial esperando en cola de nuevos
+            // Aunque oficialmente "tiempoLlegada" es null hasta entrar a memoria,
+            // si asumimos que su llegada virtual es 0, ya está esperando.
+            // Podemos mostrar la espera acumulada:
+            espera = relojGlobal - 0; 
         }
 
-        // <td>${tRetorno >=0 ? tRetorno : '-'}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
-        
         bcpTableBody.innerHTML += `<tr>
             <td>${proc.id}</td><td>${est}</td><td>${proc.operacionStr}</td>
-            <td>${proc.resultado || '-'}</td><td>${proc.tiempoLlegada >=0 ? proc.tiempoLlegada : '-'}</td>
-            <td>${proc.tiempoFinalizacion >=0 ? proc.tiempoFinalizacion : '-'}</td>
-            <td>${tRetorno}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
-            <td>${espera}</td><td>${servicio}</td><td>${proc.tme - servicio}</td>
+            <td>${proc.resultado || '-'}</td>
+            <td>${llegadaStr}</td> 
+            <td>${proc.tiempoFinalizacion >= 0 ? proc.tiempoFinalizacion : '-'}</td>
+            <td>${tRetorno}</td>
+            <td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
+            <td>${espera}</td><td>${proc.tiempoServicio}</td><td>${proc.tme - proc.tiempoServicio}</td>
         </tr>`;
     });
     bcpModal.classList.remove('disableCont');
 };
 
-// Requerimiento 11: Tabla de Páginas
 const verTablaPaginas = () => {
     tablaPaginasBody.innerHTML = '';
     
-    // Procesos activos (Listos, Bloqueados, Ejecucion)
     const activos = [...listos, ...bloqueados];
     if(procesoEnEjecucion) activos.push(procesoEnEjecucion);
     
-    // Agregar SO
     tablaPaginasBody.innerHTML += `<tr>
         <td>S.O.</td><td>20 (4 frames)</td><td>0, 1, 2, 3</td>
     </tr>`;
@@ -486,9 +496,7 @@ const verTablaPaginas = () => {
         </tr>`;
     });
 
-    // Requerimiento 11: Relación de marcos libres
     listaMarcosLibres.textContent = marcosLibres.sort((a,b)=>a-b).join(', ') || "Ninguno";
-
     tablaPaginasModal.classList.remove('disableCont');
 };
 
@@ -530,7 +538,9 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'N': // Nuevo
             if (!estaPausado) {
-                nuevos.push(crearProcesoUnico());
+                const p = crearProcesoUnico();
+                p.esLoteInicial = false; // Tecla N -> NO es lote inicial, llegada será Reloj
+                nuevos.push(p);
                 actualizarUI();
             }
             break;
@@ -541,7 +551,7 @@ document.addEventListener('keydown', (e) => {
                 verVentanaBCP();
             }
             break;
-        case 'T': // Tabla Paginas (Requerimiento 15)
+        case 'T': // Tabla Paginas
             if (!estaPausado) {
                 estaPausado = true;
                 estadoSimulacionSpan.textContent = "PAUSADO (Tabla Páginas)";

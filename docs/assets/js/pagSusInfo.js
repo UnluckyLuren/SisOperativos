@@ -18,7 +18,7 @@ const relojGlobalH3 = document.getElementById("relojGlobal");
 const estadoSimulacionSpan = document.getElementById("estadoSimulacion");
 const memoriaGrid = document.getElementById("memoriaGrid");
 
-// ELEMENTOS PARA SUSPENDIDOS [Requerimiento 7 y 8]
+// ELEMENTOS PARA SUSPENDIDOS
 const colaSuspendidosBody = document.getElementById("colaSuspendidosBody");
 const conteoSuspendidosSpan = document.getElementById("conteoSuspendidos");
 const infoRetornoSuspendido = document.getElementById("infoRetornoSuspendido");
@@ -48,7 +48,7 @@ let nuevos = [];
 let listos = [];
 let bloqueados = [];
 let terminados = [];
-let suspendidos = []; // [Requerimiento: Cola de Suspendidos]
+let suspendidos = []; 
 let procesoEnEjecucion = null;
 
 let relojGlobal = 0;
@@ -82,7 +82,11 @@ const crearProcesoUnico = () => {
         paginasReq: paginasNecesarias,
         resultado: null,
         estadoFinal: null,
-        tiempoLlegada: -1,
+
+        // --- CONTROL DE TIEMPOS MODIFICADO ---
+        tiempoLlegada: null, // Se asigna al entrar a LISTOS (Memoria)
+        esLoteInicial: false, // Bandera para saber si forzamos llegada 0 o usamos reloj
+
         tiempoFinalizacion: -1,
         tiempoRetorno: -1,
         tiempoRespuesta: -1,
@@ -91,7 +95,7 @@ const crearProcesoUnico = () => {
         tiempoEnBloqueado: 0,
         tiempoEnQuantum: 0,
         fueEjecutado: false,
-        estado: 'Nuevo' // Estado lógico interno
+        estado: 'Nuevo' 
     };
     return nuevoProceso;
 };
@@ -152,7 +156,13 @@ btnIniciar.addEventListener("click", () => {
     quantum = quantumValor;
     nuevos = [];
     siguienteId = 1;
-    for (let i = 0; i < cantidad; i++) nuevos.push(crearProcesoUnico());
+
+    // Generamos Lote Inicial con la bandera esLoteInicial = true
+    for (let i = 0; i < cantidad; i++) {
+        let proc = crearProcesoUnico();
+        proc.esLoteInicial = true; 
+        nuevos.push(proc);
+    }
     
     listos = []; bloqueados = []; terminados = []; suspendidos = [];
     procesoEnEjecucion = null;
@@ -172,10 +182,7 @@ btnIniciar.addEventListener("click", () => {
 const mainEjecucion = () => {
     if (estaPausado) return;
 
-    // 1. Bloqueados (Solo los que están en Memoria, los suspendidos NO cuentan tiempo de bloqueo activo en esta lógica simple o se pausan)
-    // El requerimiento no especifica si el tiempo bloqueado sigue contando en disco. 
-    // Usualmente en estas simulaciones, al suspender, se 'congela' o se asume que espera I/O lento.
-    // Simplemente NO decrementamos tiempo si está en suspendidos, solo procesamos la lista 'bloqueados'.
+    // 1. Bloqueados
     manejarBloqueados();
 
     // 2. Admisión (Nuevos -> Listos)
@@ -183,7 +190,14 @@ const mainEjecucion = () => {
         const proc = nuevos[0];
         if (proc.paginasReq <= marcosLibres.length) {
             nuevos.shift();
-            proc.tiempoLlegada = relojGlobal;
+            
+            // --- ASIGNACIÓN DE TIEMPOS MODIFICADA ---
+            if (proc.esLoteInicial) {
+                proc.tiempoLlegada = 0;
+            } else {
+                proc.tiempoLlegada = relojGlobal;
+            }
+
             proc.estado = 'Listo';
             asignarMemoria(proc);
             listos.push(proc);
@@ -211,13 +225,14 @@ const mainEjecucion = () => {
         procesoEnEjecucion.tiempoEnQuantum = 0;
         
         if (!procesoEnEjecucion.fueEjecutado) {
+            // Tiempo Respuesta = RelojGlobal - TiempoLlegada
             procesoEnEjecucion.tiempoRespuesta = relojGlobal - procesoEnEjecucion.tiempoLlegada;
             procesoEnEjecucion.fueEjecutado = true;
         }
         actualizarEstadoMemoria(procesoEnEjecucion.id, 'Ejecucion');
     }
 
-    // 5. Finalizar [Requerimiento 5: No terminar si hay suspendidos]
+    // 5. Finalizar
     if (nuevos.length === 0 && listos.length === 0 && bloqueados.length === 0 && suspendidos.length === 0 && !procesoEnEjecucion) {
         finalizarSimulacion();
     } else {
@@ -251,7 +266,7 @@ const asignarMemoria = (proc) => {
 };
 
 const liberarMemoria = (proc) => {
-    if(!tablaPaginas[proc.id]) return; // Si no tiene páginas (ej. suspendido o error), ignorar
+    if(!tablaPaginas[proc.id]) return; 
     
     const marcos = tablaPaginas[proc.id];
     marcos.forEach(mIdx => {
@@ -260,7 +275,7 @@ const liberarMemoria = (proc) => {
         memoria[mIdx].slotsOcupados = 0;
         marcosLibres.push(mIdx);
     });
-    delete tablaPaginas[proc.id]; // Borrar entrada de tabla de páginas
+    delete tablaPaginas[proc.id]; 
     marcosLibres.sort((a,b) => a-b);
 };
 
@@ -355,10 +370,9 @@ const actualizarUI = () => {
         proximoProcesoInfo.textContent = "Cola Nuevos Vacía";
     }
 
-    // UI SUSPENDIDOS Requerimiento 3 y 8
+    // UI SUSPENDIDOS
     conteoSuspendidosSpan.textContent = suspendidos.length;
     if(suspendidos.length > 0) {
-        // Requerimiento 8: Mostrar ID y Tamaño del que regresa
         infoRetornoSuspendido.innerHTML = `Próximo a regresar: ID <strong>${suspendidos[0].id}</strong> | Tam: <strong>${suspendidos[0].tamanio}</strong>`;
     } else {
         infoRetornoSuspendido.textContent = "Próximo a regresar: Ninguno";
@@ -407,7 +421,7 @@ const actualizarUI = () => {
     actualizarVisualMemoria();
 };
 
-// --- MODALES ---
+// --- MODALES (BCP ACTUALIZADO) ---
 const verTablaFinalDatos = () => {
     reporteFinalBody.innerHTML = '';
     terminados.sort((a, b) => a.id - b.id).forEach(proc => {
@@ -423,7 +437,7 @@ const verTablaFinalDatos = () => {
 
 const verVentanaBCP = () => {
     bcpTableBody.innerHTML = '';
-    // Incluir Suspendidos en BCP [Requerimiento 4 (parcial implícito al ser BCP de todos)]
+    // Incluir Suspendidos en BCP
     const todos = [...listos, ...bloqueados, ...suspendidos, ...terminados];
     if (procesoEnEjecucion) todos.push(procesoEnEjecucion);
     nuevos.forEach(p => todos.push(p));
@@ -435,30 +449,37 @@ const verVentanaBCP = () => {
         if(proc === procesoEnEjecucion) est = "Ejecucion";
         else if(listos.includes(proc)) est = "Listo";
         else if(bloqueados.includes(proc)) est = "Bloqueado";
-        else if(suspendidos.includes(proc)) est = "Suspendido"; // Nuevo estado BCP
+        else if(suspendidos.includes(proc)) est = "Suspendido"; 
         else if(terminados.includes(proc)) est = "Terminado";
 
-        let espera = proc.tiempoEspera;
-        let servicio = proc.tiempoServicio;
-        let tRetorno = (est === 'Terminado') ? proc.tiempoRetorno : (relojGlobal - proc.tiempoLlegada);
+        let espera = 0;
+        let tRetorno = '-';
         
-        if(est !== 'Terminado' && est !== 'Nuevo') {
-            espera = (relojGlobal - proc.tiempoLlegada) - servicio;
-        }
-        if(est === 'Nuevo') { espera = 0; }
+        // Manejo visual de llegada (0 pendiente o valor real)
+        let llegadaStr = (proc.tiempoLlegada !== null) ? proc.tiempoLlegada : (proc.esLoteInicial ? '0 (Pendiente)' : '-');
 
-         if (est === 'Terminado') {
-            tRetorno = tRetorno;
-        } else {
-            tRetorno = '-';
+        // Cálculo de tiempos ajustado al código de referencia
+        if (proc.tiempoLlegada !== null) {
+            if (est === 'Terminado') {
+                tRetorno = proc.tiempoRetorno;
+                espera = proc.tiempoEspera;
+            } else {
+                // Formula: Espera = (Reloj - Llegada) - Servicio
+                espera = (relojGlobal - proc.tiempoLlegada) - proc.tiempoServicio;
+            }
+        } else if (proc.esLoteInicial && est === 'Nuevo') {
+            // Visualmente mostrar espera acumulada si es lote inicial
+            espera = relojGlobal - 0; 
         }
 
         bcpTableBody.innerHTML += `<tr>
             <td>${proc.id}</td><td>${est}</td><td>${proc.operacionStr}</td>
-            <td>${proc.resultado || '-'}</td><td>${proc.tiempoLlegada >=0 ? proc.tiempoLlegada : '-'}</td>
+            <td>${proc.resultado || '-'}</td>
+            <td>${llegadaStr}</td>
             <td>${proc.tiempoFinalizacion >=0 ? proc.tiempoFinalizacion : '-'}</td>
-            <td>${tRetorno}</td><td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
-            <td>${espera}</td><td>${servicio}</td><td>${proc.tme - servicio}</td>
+            <td>${tRetorno}</td>
+            <td>${proc.tiempoRespuesta >=0 ? proc.tiempoRespuesta : '-'}</td>
+            <td>${espera}</td><td>${proc.tiempoServicio}</td><td>${proc.tme - proc.tiempoServicio}</td>
         </tr>`;
     });
     bcpModal.classList.remove('disableCont');
@@ -482,7 +503,7 @@ const verTablaPaginas = () => {
         </tr>`;
     });
     
-    // Requerimiento 11/15 Mostrar suspendidos también (en disco, sin marcos)
+    // Mostrar suspendidos
     suspendidos.forEach(proc => {
         tablaPaginasBody.innerHTML += `<tr style="background-color: #fce4ec;">
             <td>${proc.id}</td><td>${proc.tamanio}</td><td>En Disco (Swap)</td>
@@ -531,7 +552,9 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'N': // Nuevo
             if (!estaPausado) {
-                nuevos.push(crearProcesoUnico());
+                const p = crearProcesoUnico();
+                p.esLoteInicial = false; // Tecla N -> Reloj global
+                nuevos.push(p);
                 actualizarUI();
             }
             break;
@@ -551,15 +574,12 @@ document.addEventListener('keydown', (e) => {
             break;
 
         case 'S': // Suspendido (Swap Out)
-            // Al presionar esta tecla el primero en la cola de bloqueados saldrá de memoria principal e ira a estado suspendido
             if (!estaPausado && bloqueados.length > 0) {
                 const procSuspendido = bloqueados.shift();
-                
-                // Simulación de escritura en archivo (console log)
                 console.log(`Guardando datos de Proceso ${procSuspendido.id} en archivo de suspensión...`);
                 
                 procSuspendido.estado = 'Suspendido';
-                liberarMemoria(procSuspendido); // Libera marcos
+                liberarMemoria(procSuspendido); 
                 suspendidos.push(procSuspendido);
 
                 descargarJSONSuspendidos();
@@ -568,24 +588,17 @@ document.addEventListener('keydown', (e) => {
             break;
 
         case 'R': // Return (Swap In)
-            // el primero en la cola de suspendidos regresara a memoria principal siempre y cuando haya espacio
             if (!estaPausado && suspendidos.length > 0) {
-                const procRetorno = suspendidos[0]; // Revisamos el primero sin sacarlo aun
+                const procRetorno = suspendidos[0]; 
                 
-                // Verificar espacio (marcos necesarios <= marcos libres)
                 if (procRetorno.paginasReq <= marcosLibres.length) {
-                    suspendidos.shift(); // Sacamos de disco
-                    
-                    // Asignamos memoria
+                    suspendidos.shift(); 
                     asignarMemoria(procRetorno);
-                    
                     procRetorno.estado = 'Listo';
                     listos.push(procRetorno);
-                    
                     actualizarUI();
                 } else {
-                    // Feedback visual opcional: No cabe
-                    console.log(`Proceso ${procRetorno.id} no cabe en memoria (${procRetorno.paginasReq} pags req, ${marcosLibres.length} libres).`);
+                    console.log(`Proceso ${procRetorno.id} no cabe en memoria.`);
                     const estadoOriginal = estadoSimulacionSpan.textContent;
                     estadoSimulacionSpan.textContent = `¡No hay espacio para ID ${procRetorno.id}!`;
                     estadoSimulacionSpan.style.color = "red";
@@ -599,17 +612,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 function descargarJSONSuspendidos(nombreArchivo = "procesos_suspendidos.json") {
-    const dataStr = JSON.stringify(suspendidos, null, 2); // todos los suspendidos en un solo JSON
+    const dataStr = JSON.stringify(suspendidos, null, 2); 
     const blob = new Blob([dataStr], { type: "application/json" });
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-
     a.href = url;
     a.download = nombreArchivo;
     a.click();
-
-    // limpieza
     URL.revokeObjectURL(url);
 }
 
