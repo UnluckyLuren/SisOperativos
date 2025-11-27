@@ -596,6 +596,8 @@ document.addEventListener('keydown', (e) => {
                     asignarMemoria(procRetorno);
                     procRetorno.estado = 'Listo';
                     listos.push(procRetorno);
+
+                    descargarJSONSuspendidos();
                     actualizarUI();
                 } else {
                     console.log(`Proceso ${procRetorno.id} no cabe en memoria.`);
