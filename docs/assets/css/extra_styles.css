@@ -1,0 +1,127 @@
+.menuFlotante {
+    position: absolute;
+    top: 2em;
+    right: 2em;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.533);
+    padding: 1.5em;
+    border-radius: 5em;
+    width: max-content;
+    height: max-content;
+    border: 1px solid rgba(255, 255, 255, 0.649);
+    box-sizing: border-box;
+}
+
+.menuFlotante p {
+    margin: 0 1em;
+    z-index: 10;
+}
+
+.menuFlotante a {
+    text-decoration: none;
+    color: white;
+}
+
+.menuFlotante p:hover {
+    color: aqua;
+    font-size: 1.01em;
+    transition: all 0.1s 0.1s ease-in-out;
+}
+
+.portada, .miDesc {
+    position: absolute;
+    text-align: center;
+    top: 5em;
+    left: 17em;
+    background-color: rgba(0, 0, 0, 0.524);
+    border-radius: 1em;
+    border: 1px solid rgba(255, 255, 255, 0.567);
+    padding: 2em;
+    font-size: 2em;
+}
+
+/* Para el vidor del pdf */
+
+#controls {
+    background: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 30em;
+}
+
+#controls button {
+    background: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+#controls button:hover {
+    background: #ddd;
+}
+
+#canvas-container canvas {
+    position: fixed;
+}
+
+#canvas-container {   
+    overflow: hidden;  
+    background-color: #f0f0f0;
+}
+
+#miPDfVisor {
+    display: block;   
+    width: 38em;      
+    height: auto;   
+}
+
+/* El canvas donde se dibuja el PDF */
+#the-canvas {
+    display: block;
+}
+
+.contVisorPdf {
+    position: absolute;
+    top: 1em;
+    left: 40em;
+}
+
+.miDesc {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    width: 20em;
+    height: max-content;
+    font-size: 1.5em;
+    margin:5em 0 0 15em;
+}
+
+.contVisorPdf a {
+    text-decoration: none;
+    color: white;
+}
+
+.enl {
+    display: flex;
+    position: absolute !important;
+    top: 15em !important;
+    right: -17em !important;
+}
+
+.enl h2 {
+    margin-left: 1em;
+}
+
+.enl h2:hover {
+    color:aqua;
+}
+
